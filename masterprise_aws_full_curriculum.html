@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Masterprise AWS Full Curriculum — DevOps + Data Engineering</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f6f3ee;--panel:#fffdf8;--border:#ddd8ce;--border2:#e8e3d8;
+  --text:#1a1814;--muted:#5f5a50;--muted2:#8a8275;
+  --blue:#1c6ea4;--blue-bg:#e8f2fb;--blue-border:#9ac3e6;
+  --green:#0e7c5e;--green-bg:#e4f5ee;--green-border:#7ecbb0;
+  --orange:#b56a10;--orange-bg:#fdf0df;--orange-border:#e8b86d;
+  --purple:#6b3fc4;--purple-bg:#f0ebfc;--purple-border:#b89de0;
+  --font-sans:"Avenir Next","Segoe UI",system-ui,sans-serif;
+  --font-mono:"SFMono-Regular","Menlo","Courier New",monospace;
+  --radius-sm:8px;--radius:12px;--radius-lg:18px;--radius-xl:24px;
+  --shadow:0 2px 12px rgba(0,0,0,0.07);
+}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--text);padding:20px 16px 80px;font-size:14px}
+.shell{max-width:1100px;margin:0 auto}
+.hero{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-xl);padding:28px 32px;margin-bottom:20px;box-shadow:var(--shadow)}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--blue);font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:14px}
+.hero h1{font-size:clamp(1.6rem,3.5vw,2.6rem);line-height:1.1;margin-bottom:12px;max-width:20ch}
+.hero-sub{color:var(--muted);line-height:1.7;max-width:72ch;font-size:0.93rem;margin-bottom:20px}
+.hero-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.stat{background:rgba(255,255,255,.8);border:1px solid var(--border2);border-radius:var(--radius);padding:12px 14px}
+.stat strong{display:block;font-size:1.5rem;color:var(--text);margin-bottom:3px}
+.stat span{font-size:0.82rem;color:var(--muted);line-height:1.4}
+.capstone-banner{background:linear-gradient(135deg,#1a1814 0%,#2d2820 100%);border-radius:var(--radius-xl);padding:22px 28px;margin-bottom:20px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
+.capstone-banner h2{font-size:1.1rem;color:#fff;margin-bottom:6px}
+.capstone-banner p{color:rgba(255,255,255,.65);font-size:0.86rem;line-height:1.6;max-width:62ch}
+.capstone-stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.cb-chip{padding:4px 9px;border-radius:999px;font-size:11px;font-weight:600;background:rgba(255,255,255,.12);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.18)}
+.section{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius-xl);padding:22px 24px;margin-bottom:18px;box-shadow:var(--shadow)}
+.section-eyebrow{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;color:var(--blue)}
+.section h2{font-size:1.15rem;margin-bottom:6px}
+.section p.sub{color:var(--muted);font-size:0.88rem;line-height:1.65;margin-bottom:16px}
+.week-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.wtab{padding:6px 13px;border-radius:var(--radius-sm);border:1px solid var(--border);background:#f1ede6;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s}
+.wtab:hover{color:var(--text);border-color:var(--muted2)}
+.wtab.active{background:#fff;border-color:var(--blue);color:var(--blue)}
+.week-panel{display:none}
+.week-panel.active{display:block}
+.week-card{border:1px solid var(--border2);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:14px}
+.week-header{padding:14px 18px;background:rgba(255,255,255,.6);border-bottom:1px solid var(--border2)}
+.week-header h3{font-size:1rem;margin-bottom:4px}
+.week-meta{font-size:11px;color:var(--muted);line-height:1.55}
+.week-outcome{margin-top:8px;padding:8px 11px;background:var(--green-bg);border:1px solid var(--green-border);border-radius:var(--radius-sm);font-size:12px;color:var(--green);line-height:1.55}
+.capstone-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:var(--orange-bg);border:1px solid var(--orange-border);color:var(--orange);font-size:10px;font-weight:700;letter-spacing:.05em;margin-top:8px}
+.day-tabs{display:flex;gap:6px;flex-wrap:wrap;padding:12px 18px;background:rgba(248,245,240,.6);border-bottom:1px solid var(--border2)}
+.dtab{padding:5px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:#f1ede6;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s}
+.dtab:hover{color:var(--text);border-color:var(--muted2)}
+.dtab.active{background:#fff;border-color:var(--blue);color:var(--blue)}
+.day-panel{display:none;padding:16px 18px}
+.day-panel.active{display:block}
+.block{border-radius:var(--radius);padding:13px 15px;margin-bottom:10px}
+.block h4{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px}
+.learn-block{background:var(--blue-bg);border:1px solid var(--blue-border)}
+.learn-block h4{color:var(--blue)}
+.learn-block p,.learn-block li{color:#0c3d6b;font-size:12px;line-height:1.65}
+.learn-block ul{padding-left:16px;display:grid;gap:5px}
+.build-block{background:var(--orange-bg);border:1px solid var(--orange-border)}
+.build-block h4{color:var(--orange)}
+.build-block p,.build-block li{color:#5c3300;font-size:12px;line-height:1.65}
+.build-block ul{padding-left:16px;display:grid;gap:5px}
+.deliverable-block{background:#fff8ee;border:1.5px solid var(--orange-border)}
+.deliverable-block h4{color:var(--orange)}
+.deliverable-block p,.deliverable-block li{color:#4a2900;font-size:12px;line-height:1.65}
+.deliverable-block ul{padding-left:16px;display:grid;gap:5px}
+.res-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+.res{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;border:1px solid;font-size:11px;font-weight:600;text-decoration:none;transition:opacity .15s}
+.res:hover{opacity:.75}
+.res-doc{background:var(--blue-bg);border-color:var(--blue-border);color:var(--blue)}
+.res-tutorial{background:var(--green-bg);border-color:var(--green-border);color:var(--green)}
+.res-video{background:var(--purple-bg);border-color:var(--purple-border);color:var(--purple)}
+.res-practice{background:var(--orange-bg);border-color:var(--orange-border);color:var(--orange)}
+.concept-q{background:#fff;border-left:3px solid var(--blue);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:9px 13px;margin:8px 0;font-size:12px;color:var(--muted);line-height:1.6;box-shadow:var(--shadow)}
+.concept-q b{color:var(--text);font-weight:600}
+.checkpoint{border-left:3px solid var(--green);padding:7px 12px;margin:8px 0;font-size:12px;color:var(--muted)}
+.checkpoint b{color:var(--green);font-weight:600}
+.roadmap{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+.roadmap-step{background:#fff;border:1px solid var(--border2);border-radius:var(--radius);padding:14px}
+.roadmap-step strong{display:block;font-size:0.88rem;margin-bottom:5px;color:var(--text)}
+.roadmap-step p{font-size:12px;color:var(--muted);line-height:1.55}
+.phase-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.phase-chip{font-size:10px;padding:2px 7px;border-radius:999px;background:var(--blue-bg);border:1px solid var(--blue-border);color:var(--blue);font-weight:600}
+.mini-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.mini-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;transition:border-color .15s,transform .15s}
+.mini-card:hover{border-color:var(--muted2);transform:translateY(-1px)}
+.mini-card h3{font-size:0.92rem;margin-bottom:5px}
+.mini-card p{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.chip{padding:3px 9px;border-radius:999px;font-size:10px;font-weight:600;background:rgba(255,255,255,.8);border:1px solid var(--border);color:var(--muted)}
+@media(max-width:900px){.hero-stats{grid-template-columns:repeat(2,1fr)}.roadmap{grid-template-columns:repeat(2,1fr)}.capstone-banner{grid-template-columns:1fr}}
+@media(max-width:600px){body{padding:14px 12px 60px}.hero{padding:20px 18px}.hero-stats{grid-template-columns:1fr}.roadmap{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<div class="hero">
+  <div class="hero-eyebrow">Masterprise AWS Full Curriculum</div>
+  <h1>AWS DevOps + Data Engineering — 12-Week Integrated Path</h1>
+  <p class="hero-sub">Every week you learn a topic and immediately apply it to build AgriChain — a Farm and Contractor management platform — on AWS. By week 12 you have a production-grade system covering application delivery, data engineering, observability, and security, all in one coherent portfolio story.</p>
+  <div class="hero-stats">
+    <div class="stat"><strong>12</strong><span>Weeks of structured learning with weekly capstone increments</span></div>
+    <div class="stat"><strong>2</strong><span>Integrated paths: AWS DevOps Platform + AWS Data Engineering</span></div>
+    <div class="stat"><strong>1</strong><span>Capstone: AgriChain on AWS — ports the full GCP reference to AWS-native services</span></div>
+    <div class="stat"><strong>Free</strong><span>All resources are free online documentation, tutorials, or interactive tools</span></div>
+  </div>
+</div>
+
+<div class="capstone-banner">
+  <div>
+    <h2>AgriChain on AWS — Capstone Project</h2>
+    <p>A Farm and Contractor contracting platform. Users register farms and contractors, create contracts, log harvests with photos, calculate payments, and generate analytics. Each week adds one production layer: from containerized API to event-driven data pipelines to full observability.</p>
+    <div class="capstone-stack">
+      <span class="cb-chip">FastAPI</span><span class="cb-chip">PostgreSQL</span><span class="cb-chip">Docker</span>
+      <span class="cb-chip">ECS Fargate</span><span class="cb-chip">EKS</span><span class="cb-chip">RDS Aurora</span>
+      <span class="cb-chip">EventBridge</span><span class="cb-chip">SQS</span><span class="cb-chip">S3 Lakehouse</span>
+      <span class="cb-chip">AWS Glue</span><span class="cb-chip">Athena</span><span class="cb-chip">CloudWatch</span>
+      <span class="cb-chip">Terraform</span><span class="cb-chip">GitHub Actions</span><span class="cb-chip">ArgoCD</span>
+    </div>
+  </div>
+  <div style="text-align:center;opacity:.7;font-size:48px">&#127806;</div>
+</div>
+
+<div class="section">
+  <div class="section-eyebrow">Execution Model</div>
+  <h2>12-Week Build Sequence</h2>
+  <p class="sub">Each phase ends with a runnable, deployable AgriChain increment. Never start the next phase on a broken foundation.</p>
+  <div class="roadmap">
+    <div class="roadmap-step">
+      <strong>Phase 1 — Foundations (W1-W3)</strong>
+      <p>Linux, Git, networking, Python/Bash, Docker. End state: containerized AgriChain running locally with docker-compose.</p>
+      <div class="phase-chips"><span class="phase-chip">Linux</span><span class="phase-chip">Git</span><span class="phase-chip">Docker</span></div>
+    </div>
+    <div class="roadmap-step">
+      <strong>Phase 2 — AWS Platform (W4-W7)</strong>
+      <p>IAM, VPC, Terraform, ECS Fargate, RDS, EKS. End state: AgriChain API running on EKS with managed database in AWS.</p>
+      <div class="phase-chips"><span class="phase-chip">Terraform</span><span class="phase-chip">ECS</span><span class="phase-chip">EKS</span><span class="phase-chip">RDS</span></div>
+    </div>
+    <div class="roadmap-step">
+      <strong>Phase 3 — Data Engineering (W8-W10)</strong>
+      <p>EventBridge, SQS, Kinesis, Glue, Athena, CI/CD, GitOps. End state: event-driven harvest pipeline feeding an S3 lakehouse.</p>
+      <div class="phase-chips"><span class="phase-chip">Kinesis</span><span class="phase-chip">Glue</span><span class="phase-chip">Athena</span><span class="phase-chip">ArgoCD</span></div>
+    </div>
+    <div class="roadmap-step">
+      <strong>Phase 4 — Production Ready (W11-W12)</strong>
+      <p>CloudWatch, X-Ray, GuardDuty, WAF, dbt, QuickSight. End state: fully observable, secure platform with an analytics dashboard.</p>
+      <div class="phase-chips"><span class="phase-chip">CloudWatch</span><span class="phase-chip">GuardDuty</span><span class="phase-chip">dbt</span><span class="phase-chip">QuickSight</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-eyebrow">Interactive Curriculum</div>
+  <h2>Weekly Curriculum</h2>
+  <p class="sub">Each week: learn the topic, check understanding with concept questions, then build that piece of AgriChain. All resources are free online.</p>
+  <div class="week-tabs" id="main-week-tabs"></div>
+  <div id="main-week-content"></div>
+</div>
+
+<div class="section">
+  <div class="section-eyebrow">Supporting Projects</div>
+  <h2>Mini Projects — Build Along the Way</h2>
+  <p class="sub">Build these during curriculum weeks to deepen specific skills. Each one is 1-3 days and produces a standalone artifact for your portfolio.</p>
+  <div class="mini-grid" id="mini-project-grid"></div>
+</div>
+
+</div>
+
+<script>
+function res(label,url,type){
+  type=type||'doc';
+  return '<a class="res res-'+type+'" href="'+url+'" target="_blank" rel="noreferrer">'+label+'</a>';
+}
+
+var WEEKS=[
+{
+  title:"Week 1 — Linux, Git & Scripting Foundations",
+  meta:"Phase 1 · ~20 hrs · Skills: Linux, Git, Bash, Python",
+  outcome:"<b>End state:</b> A Git repo for AgriChain exists with README, folder structure, a Bash health-check script, and a Python AWS inventory script.",
+  capstone:"Create the AgriChain monorepo skeleton and Bash tooling",
+  days:[
+    {
+      label:"Day 1-2",
+      title:"Linux Essentials",
+      learn:"Master the Linux primitives that underpin everything in DevOps: filesystem, permissions, processes, services, and text processing pipelines.",
+      learnItems:[
+        "Filesystem hierarchy: why /etc, /var, /tmp, /opt, /usr each exist and what belongs there",
+        "Users, groups, chmod (octal and symbolic), sudo, /etc/passwd and /etc/shadow structure",
+        "Process management: ps aux, top, kill signals SIGTERM vs SIGKILL, systemd units, journalctl",
+        "Text processing pipelines: grep, sed, awk, cut, sort, uniq, wc — build pipelines with pipes and redirection"
+      ],
+      resources:[
+        res("The Linux Command Line — free read online","https://linuxcommand.org/lc3_learning_the_shell.php","doc"),
+        res("Linux Survival — interactive browser terminal","https://linuxsurvival.com/","tutorial"),
+        res("OverTheWire: Bandit — hands-on terminal wargame","https://overthewire.org/wargames/bandit/","practice"),
+        res("systemd service man page","https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html","doc")
+      ],
+      conceptQ:"Why does <b>kill -9</b> skip cleanup handlers? When would you choose SIGTERM first and only escalate to SIGKILL after a timeout?",
+      build:"<b>Project:</b> Write <code>scripts/health_check.sh</code> for AgriChain. Check: disk usage above 80%, API process running, port 8000 open, PostgreSQL port 5432 reachable.",
+      buildItems:[
+        "Use set -euo pipefail at the top for strict mode — script fails fast on any unhandled error",
+        "Use ss or netstat to check ports (not nmap — too heavy for a health check)",
+        "Output structured lines: [OK] / [WARN] / [FAIL] prefixed with timestamp",
+        "Test it against a running docker-compose postgres container"
+      ],
+      deliverables:["health_check.sh committed to repo","At least one check scenario that triggers WARN"],
+      checkpoint:"Can you explain every line of your script to someone who has not seen it before?"
+    },
+    {
+      label:"Day 3-4",
+      title:"Git and Collaboration Discipline",
+      learn:"Git is the control plane for code, infrastructure, and runbooks. Go beyond basic commits — understand the internal object model so you can recover from anything.",
+      learnItems:[
+        "Git object model: blobs, trees, commits, refs — run git cat-file -p to inspect them",
+        "Branching strategies: trunk-based development vs Git Flow — understand when each fits the team size",
+        "Rebase vs merge: rebase for clean linear history on solo branches, merge for integrating team branches",
+        "Recovery tools: git reflog to find lost commits, git bisect to find regression commit, git reset --soft/mixed/hard"
+      ],
+      resources:[
+        res("Pro Git Book — free online, chapters 1 to 7","https://git-scm.com/book/en/v2","doc"),
+        res("Learn Git Branching — interactive visual tutorial","https://learngitbranching.js.org/","tutorial"),
+        res("Conventional Commits specification","https://www.conventionalcommits.org/en/v1.0.0/","doc"),
+        res("Git reference documentation","https://git-scm.com/docs","doc")
+      ],
+      conceptQ:"What is the difference between <b>git pull --rebase</b> and <b>git pull --merge</b>? Which should be the default for a solo DevOps project where you want a clean history?",
+      build:"<b>Project:</b> Set up the AgriChain repo with professional Git conventions and security guards.",
+      buildItems:[
+        "Initialize repo with .gitignore covering Python, Terraform, Node, macOS, and .env files",
+        "Adopt conventional commits: feat:, fix:, infra:, data:, docs: prefixes",
+        "Set up a pre-commit hook that scans for secrets before allowing the commit (look for AWS_SECRET, password=, token=)",
+        "Write CONTRIBUTING.md with branch naming convention and commit message rules"
+      ],
+      deliverables:["Repo on GitHub with several conventional-format commits","Pre-commit hook blocking a test secret commit"],
+      checkpoint:"Use git bisect to find which commit introduced a dummy bug you deliberately planted"
+    },
+    {
+      label:"Day 5",
+      title:"Python and Bash for AWS Automation",
+      learn:"Bash for short glue scripts. Python with boto3 for anything that touches AWS APIs, needs parsing logic, or must be tested.",
+      learnItems:[
+        "Bash strict mode, argument parsing with getopts or positional parameters, trap for cleanup on exit",
+        "Python subprocess.run vs os.system — why subprocess with a list argument is safer (no shell injection)",
+        "boto3 session model: credential chain (env vars, ~/.aws, instance metadata, IRSA), regions, resource vs client APIs",
+        "Python virtual environments with venv, requirements.txt pinning, and packaging a CLI with click"
+      ],
+      resources:[
+        res("Automate the Boring Stuff — free online Python book","https://automatetheboringstuff.com/3e/chapter1.html","doc"),
+        res("boto3 quickstart guide","https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html","doc"),
+        res("Google Shell Style Guide","https://google.github.io/styleguide/shellguide.html","doc"),
+        res("Real Python boto3 tutorial — free","https://realpython.com/python-boto3-aws-s3/","tutorial")
+      ],
+      conceptQ:"Why does <b>subprocess.run(['ls','-la'])</b> behave differently from <b>subprocess.run('ls -la', shell=True)</b>? What is the security risk with shell=True?",
+      build:"<b>Project:</b> Write <code>scripts/aws_inventory.py</code> that lists EC2 instances by region and outputs structured JSON.",
+      buildItems:[
+        "Accept --region and --profile flags via click or argparse",
+        "Handle botocore.exceptions.NoCredentialsError gracefully with a clear error message",
+        "Format output as pretty-printed JSON to stdout, with optional --output file flag",
+        "Add to repo with requirements.txt pinning boto3 and click"
+      ],
+      deliverables:["aws_inventory.py committed with CLI help text via --help","Script runs without error against AWS free tier"],
+      checkpoint:"Can the script detect when no AWS credentials are configured and print a helpful message instead of a stack trace?"
+    }
+  ]
+},
+{
+  title:"Week 2 — Networking + Docker Local Development",
+  meta:"Phase 1 · ~22 hrs · Skills: TCP/IP, DNS, TLS, Docker, docker-compose",
+  outcome:"<b>End state:</b> AgriChain FastAPI + PostgreSQL + Redis + Nginx running locally with production-grade multi-stage Dockerfiles and 0 CRITICAL CVEs.",
+  capstone:"Build the local development stack with Docker",
+  days:[
+    {
+      label:"Day 1-2",
+      title:"Networking Fundamentals for Cloud Engineers",
+      learn:"Most production incidents reduce to DNS, ports, routing, or TLS misconfiguration. Learn to debug the network before you touch a VPC.",
+      learnItems:[
+        "IP addressing, CIDR notation, subnet math — calculate: how many usable hosts in 10.0.1.0/24?",
+        "DNS resolution chain: stub resolver to recursive resolver to authoritative nameserver. What does TTL control?",
+        "TLS handshake in plain English: client hello, server certificate, key exchange, session key — where does termination happen?",
+        "Load balancing: Layer 4 TCP vs Layer 7 HTTP — what is the difference and what are sticky sessions?"
+      ],
+      resources:[
+        res("Computer Networking full course — freeCodeCamp YouTube (3 hours)","https://www.youtube.com/watch?v=qiQR5rTSshw","video"),
+        res("How DNS Works — comic format explanation","https://howdns.works/","tutorial"),
+        res("Julia Evans networking blog — free articles","https://jvns.ca/categories/networking/","doc"),
+        res("MDN HTTP overview","https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview","doc")
+      ],
+      conceptQ:"A request to your API returns <b>connection refused</b>. Walk through your debugging steps in order using: ping, dig, curl -v, ss -tlnp, traceroute.",
+      build:"<b>Project:</b> Write a network debugging runbook in <code>docs/runbooks/network-debug.md</code> documenting the investigation sequence for 5 failure modes.",
+      buildItems:[
+        "Connection refused: wrong port, service not running, or firewall/security group blocking",
+        "DNS resolution failure: wrong DNS record, stale TTL cache, or propagation delay",
+        "TLS certificate error: expired cert, hostname mismatch, or self-signed not trusted",
+        "Request timeout: routing black hole, security group drop, or slow application processing",
+        "Intermittent 502 from load balancer: unhealthy targets, deployment in progress, or connection draining"
+      ],
+      deliverables:["docs/runbooks/network-debug.md committed with debugging steps for each failure mode"],
+      checkpoint:"Run dig +trace google.com and trace the DNS resolution from root nameservers to the authoritative answer"
+    },
+    {
+      label:"Day 3-5",
+      title:"Docker — Container Images and Local Stack",
+      learn:"Understand what Docker actually does at the kernel level, then build production-quality images for AgriChain.",
+      learnItems:[
+        "Linux namespaces (PID, NET, MNT, UTS) and cgroups — this is all Docker actually is at the OS layer",
+        "Image layers: each Dockerfile instruction creates one layer. Layer ordering directly affects cache hit rate and build speed",
+        "Multi-stage builds: builder stage installs deps and compiles, runtime stage is minimal and ships no build tools",
+        "Security fundamentals: non-root USER instruction, minimal base image (python:3.12-slim), never bake secrets into image layers"
+      ],
+      resources:[
+        res("Docker Get Started — official documentation","https://docs.docker.com/get-started/","doc"),
+        res("Docker build best practices — official guide","https://docs.docker.com/build/building/best-practices/","doc"),
+        res("Container learning path — iximiuz.com (free)","https://iximiuz.com/en/posts/container-learning-path/","tutorial"),
+        res("Trivy container scanner documentation","https://trivy.dev/latest/docs/","doc")
+      ],
+      conceptQ:"Why does putting <b>COPY requirements.txt .</b> before <b>COPY . .</b> dramatically speed up builds? What breaks if you swap the order?",
+      build:"<b>Project:</b> Write production Dockerfiles for AgriChain and create docker-compose.yml for local development.",
+      buildItems:[
+        "API Dockerfile: python:3.12-slim base, multi-stage builder plus runtime, non-root user named appuser, HEALTHCHECK instruction",
+        "docker-compose.yml: api service, postgres:16, redis:7-alpine, nginx reverse proxy — all on a shared agrichain-net network",
+        "Run trivy image agrichain-api:local — fix any CRITICAL or HIGH CVEs before committing the Dockerfile",
+        "Add Makefile with targets: make up, make down, make build, make logs, make shell"
+      ],
+      deliverables:[
+        "Dockerfile with multi-stage build and non-root USER committed",
+        "docker-compose.yml with api, postgres, redis, and nginx all starting cleanly",
+        "Trivy scan showing zero CRITICAL vulnerabilities",
+        "README Local Development section with make up instructions"
+      ],
+      checkpoint:"Run docker compose up from a completely clean machine or fresh Docker environment. Does it work without any manual setup steps?"
+    }
+  ]
+},
+{
+  title:"Week 3 — Application Design: Architecture, Auth, DB & Async Patterns",
+  meta:"Phase 1 · ~40 hrs · Skills: Hexagonal Architecture, JWT, DB Design, Pub/Sub, FastAPI, SQLAlchemy, Alembic, pytest",
+  outcome:"<b>End state:</b> AgriChain API built on Hexagonal Architecture — full JWT access/refresh/revocation flow, normalized PostgreSQL schema with optimistic locking, event adapter pattern — running in Docker with 80%+ test coverage.",
+  capstone:"Design and build AgriChain API with production-grade application patterns",
+  days:[
+    {
+      label:"Day 1",
+      title:"Hexagonal Architecture & Domain Modeling",
+      learn:"Hexagonal Architecture (Ports & Adapters) separates business logic from infrastructure. Your domain does not know about databases, HTTP, or message queues — it talks through abstract ports. This is what makes code testable, replaceable, and maintainable at scale.",
+      learnItems:[
+        "Layers: Domain (entities, value objects, aggregates) → Application (use cases/services) → Adapters (HTTP, DB, queue) → Infrastructure (FastAPI, SQLAlchemy, SQS)",
+        "Inbound ports: interfaces your application exposes (e.g. ContractService.activate) — called by HTTP adapters",
+        "Outbound ports: interfaces your application requires (e.g. ContractRepository.save) — implemented by DB adapters",
+        "Dependency Inversion Principle: high-level use cases depend on abstract ports, NOT on concrete SQLAlchemy or FastAPI implementations",
+        "Why it matters for testing: swap the real DB adapter with an in-memory fake without changing a single line of domain logic",
+        "AgriChain domain model: Farm, Contractor, Contract (Aggregate Root), HarvestRecord — define entities, value objects (Money, ContractStatus), and invariants before writing code"
+      ],
+      resources:[
+        res("Hexagonal Architecture — the original article by Alistair Cockburn","https://alistair.cockburn.us/hexagonal-architecture/","doc"),
+        res("Architecture Patterns with Python — free full book online (cosmicpython.com)","https://www.cosmicpython.com/book/preface.html","tutorial"),
+        res("DDD Reference — free PDF by Eric Evans","https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf","doc")
+      ],
+      conceptQ:"In Hexagonal Architecture, which layer is allowed to import from which? Can a Domain entity import from the SQLAlchemy adapter? If a use case (application layer) needs to save data, how does it do it without importing SQLAlchemy?",
+      build:"<b>Project:</b> Design the AgriChain domain model and folder structure before writing any implementation code.",
+      buildItems:[
+        "Sketch entities: User, Farm, Contractor, Contract, HarvestRecord — identify which is the Aggregate Root",
+        "Define value objects: ContractStatus (DRAFT/ACTIVE/COMPLETED/CANCELLED), Money(amount, currency) — immutable, no identity",
+        "Define invariants: a Contract in COMPLETED status cannot accept new HarvestRecords; only FARM_OWNER can create a Contract",
+        "Create folder structure: app/domain/, app/application/, app/adapters/http/, app/adapters/db/, app/adapters/events/",
+        "Write pure Python domain classes (no SQLAlchemy, no FastAPI imports) — run grep -r 'sqlalchemy\\|fastapi' app/domain/ and expect zero results"
+      ],
+      deliverables:["Domain model diagram committed to docs/domain_model.md","app/ folder structure with pure Python domain classes — zero infrastructure imports in domain layer"],
+      checkpoint:"Open your domain entity file. Do you see any import from sqlalchemy, fastapi, or boto3? If yes — your domain layer is polluted. Move that import to an adapter."
+    },
+    {
+      label:"Day 2-3",
+      title:"JWT Authentication System Design",
+      learn:"JWT is a token format, not an auth system. Understanding the full lifecycle — issuance, verification, refresh token rotation, and revocation via blocklist — separates secure implementations from vulnerable ones. Most JWT vulnerabilities come from incomplete implementation.",
+      learnItems:[
+        "JWT structure: header.payload.signature — header (alg, typ), payload (sub, exp, iat, jti, role), signature — Base64url encoded but NOT encrypted, anyone can decode the payload",
+        "Access token vs refresh token: access token short-lived (15 min) sent in Authorization header; refresh token long-lived (7 days) stored in httpOnly cookie — prevents XSS from stealing it",
+        "Token revocation problem: JWTs are stateless — the server cannot invalidate a token until it expires. Solution: token blocklist in Redis using jti (JWT ID) claim with TTL matching token exp",
+        "Refresh token rotation: issue new refresh token on every use and invalidate the old one — a reused refresh token signals compromise, trigger immediate invalidation of all tokens for that user",
+        "RBAC with JWT: embed role claim in payload, validate in middleware/Depends — avoid a DB lookup on every request by trusting signed claims",
+        "Security pitfalls: alg:none attack (always validate algorithm explicitly), HS256 shared secret vs RS256 asymmetric keys, never store tokens in localStorage (XSS vulnerable)"
+      ],
+      resources:[
+        res("JWT.io — interactive debugger, decode any token in browser","https://jwt.io/","tutorial"),
+        res("OWASP JWT Security Cheat Sheet","https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html","doc"),
+        res("Auth0 — Understanding Refresh Tokens (free article)","https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/","tutorial"),
+        res("FastAPI Security — OAuth2 with JWT official tutorial","https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/","doc")
+      ],
+      conceptQ:"A user's account is compromised. The attacker has a valid access token expiring in 14 minutes. What mechanisms can immediately invalidate it, and what is the trade-off of each approach (blocklist vs short expiry vs token binding)?",
+      build:"<b>Project:</b> Implement the full JWT auth flow for AgriChain.",
+      buildItems:[
+        "POST /auth/register: hash password with bcrypt (never store plaintext), create User entity, persist via UserRepository port",
+        "POST /auth/login: verify password, issue access token (JWT HS256, exp=15min, claims: sub=user_id, role, jti=uuid4) + refresh token (exp=7d) in httpOnly cookie",
+        "POST /auth/refresh: read refresh token from cookie, decode jti, check Redis blocklist, issue new access+refresh pair (rotation — add old jti to blocklist)",
+        "POST /auth/logout: decode refresh token jti, add to Redis SET with TTL equal to remaining token lifetime, clear cookie",
+        "require_role('FARM_OWNER') Depends factory: decode JWT from Authorization header, verify signature and exp, check role claim — raise HTTP 401 (invalid token) or 403 (wrong role) with correct status"
+      ],
+      deliverables:["JWT auth service with register/login/refresh/logout endpoints","Redis-backed token blocklist for revocation with correct TTL","require_role() dependency tested with FARM_OWNER, CONTRACTOR, and ADMIN scenarios"],
+      checkpoint:"Logout a user, copy their access token, wait 30 seconds, and replay it to a protected endpoint. Is it rejected immediately (via blocklist) or does it succeed until the 15-minute expiry? Which behavior do you have?"
+    },
+    {
+      label:"Day 4-5",
+      title:"Database Design for Transactional Systems",
+      learn:"Transactional database design guarantees correctness under concurrent load. ACID, normalization, locking, and indexing are not theoretical — they determine whether your app gives correct answers when multiple farmers submit contracts simultaneously.",
+      learnItems:[
+        "ACID properties: Atomicity (all-or-nothing — payment and status update commit together or neither does), Consistency (invariants hold before and after), Isolation (concurrent transactions don't corrupt each other), Durability (committed data survives crash)",
+        "Isolation levels and anomalies: READ COMMITTED (PostgreSQL default) prevents dirty reads but allows non-repeatable reads; REPEATABLE READ prevents that; SERIALIZABLE prevents phantom reads — higher isolation = more locking overhead",
+        "Normalization: 1NF (atomic values) → 2NF (no partial key dependency) → 3NF (no transitive dependency) — denormalize intentionally for read performance only, document every exception",
+        "Optimistic vs pessimistic locking: pessimistic uses SELECT FOR UPDATE (blocks the row), optimistic uses a version column (retry on mismatch) — choose based on contention probability; optimistic scales better for low-contention reads",
+        "Index design: B-tree for equality and range queries, partial index WHERE status='ACTIVE' skips completed contracts, composite index column order matters — most selective column first",
+        "CQRS preview: separate read model (denormalized materialized views) from write model (normalized tables) when read and write access patterns diverge significantly"
+      ],
+      resources:[
+        res("PostgreSQL Transaction Isolation — official docs","https://www.postgresql.org/docs/current/transaction-iso.html","doc"),
+        res("Use The Index, Luke — free online book on SQL indexing","https://use-the-index-luke.com/","tutorial"),
+        res("PostgreSQL Explicit Locking documentation","https://www.postgresql.org/docs/current/explicit-locking.html","doc"),
+        res("Database Normalization explained — freeCodeCamp","https://www.freecodecamp.org/news/database-normalization-1nf-2nf-3nf-table-examples/","tutorial")
+      ],
+      conceptQ:"Two FARM_OWNERs submit a contract for the same CONTRACTOR at the same millisecond. Both read active_contract_count=4 (max=5). Both write 5 and commit. Now two rows inserted but count shows 5. What isolation level and locking strategy prevents this — and why does READ COMMITTED alone not protect you here?",
+      build:"<b>Project:</b> Design the AgriChain normalized schema and Alembic migrations.",
+      buildItems:[
+        "Design schema to 3NF: users, farms, contractors, contracts, harvest_records, payments — draw ERD identifying all foreign keys, constraints, and business rule enforcement points",
+        "Add CHECK constraint: contracts.status IN ('DRAFT','ACTIVE','COMPLETED','CANCELLED') — database enforces invariant even if application layer has a bug",
+        "Add optimistic lock: contracts.version INTEGER NOT NULL DEFAULT 0 — increment on every UPDATE, application retries on version conflict (StaleDataError)",
+        "Create partial index: CREATE INDEX idx_active_contracts ON contracts(contractor_id) WHERE status='ACTIVE' — only indexes rows that matter for the active contract query",
+        "Alembic: initial migration + separate harvest_records migration — each must have a working downgrade() function",
+        "Run EXPLAIN ANALYZE on SELECT * FROM contracts WHERE contractor_id=$1 AND status='ACTIVE' — verify it shows Index Scan not Seq Scan"
+      ],
+      deliverables:["ERD diagram committed to docs/schema.md","Alembic migrations with working upgrade and downgrade","Partial index, CHECK constraint, and version column in schema"],
+      checkpoint:"Run EXPLAIN ANALYZE on your active contracts query. Does it show 'Index Scan using idx_active_contracts' or 'Seq Scan'? If Seq Scan, the partial index is not being used — investigate why."
+    },
+    {
+      label:"Day 6",
+      title:"Async Patterns: Pub/Sub and Message Queues",
+      learn:"Not everything belongs in the HTTP request-response cycle. Pub/Sub and message queues decouple producers from consumers, enable retry logic, and prevent cascading failures. Understanding the theory before touching SQS or EventBridge makes the AWS services intuitive rather than confusing.",
+      learnItems:[
+        "Synchronous vs asynchronous coupling: an HTTP call blocks and creates temporal coupling — if the payment service is down, the contract service fails too. A message queue removes this dependency",
+        "Pub/Sub model: publisher emits an event to a topic, multiple independent subscribers consume it — one ContractCompleted event triggers payment processor, notification service, and analytics pipeline simultaneously",
+        "Message delivery semantics: at-least-once (may deliver duplicate, consumer must be idempotent — this is SQS default), at-most-once (may be lost), exactly-once (requires distributed transactions — expensive)",
+        "Idempotency key pattern: consumer stores processed message_id in DB before processing — on duplicate delivery, check the table and return success without re-executing side effects",
+        "Dead Letter Queue (DLQ): messages that fail after N retries go to DLQ for inspection and manual replay — never silently discard failed messages, they represent lost business events",
+        "Event schema design: include event_id (UUID), event_type, occurred_at, aggregate_id, and payload version — never embed mutable state, use IDs and let consumers query for current state"
+      ],
+      resources:[
+        res("Enterprise Integration Patterns — messaging patterns catalog (free online)","https://www.enterpriseintegrationpatterns.com/patterns/messaging/","doc"),
+        res("Martin Fowler — Event-Driven Architecture article","https://martinfowler.com/articles/201701-event-driven.html","tutorial"),
+        res("AWS SQS concepts and best practices — official docs","https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html","doc")
+      ],
+      conceptQ:"Your AgriChain payment processor receives the same ContractCompleted event twice (at-least-once delivery). The first delivery charges the farmer. What happens on the second delivery without idempotency? Write the pseudocode for the idempotency check using a processed_events table.",
+      build:"<b>Project:</b> Design the AgriChain event schema and build the event adapter using the outbound port.",
+      buildItems:[
+        "Define event schemas as Pydantic models: ContractActivated, HarvestRecorded, ContractCompleted — fields: event_id (UUID4), event_type, occurred_at (UTC ISO8601), aggregate_id, payload",
+        "Create app/adapters/events/base.py: abstract EventPublisher port with publish(event) method — domain and application layers import only this abstract class",
+        "Create app/adapters/events/memory.py: InMemoryEventPublisher that stores events in a list — used in tests and local development",
+        "In Contract.activate() use case: call event_publisher.publish(ContractActivated(...)) through the port — zero SQS or boto3 imports in domain or application layer",
+        "Write test using InMemoryEventPublisher: activate a contract, assert exactly one ContractActivated event published with correct aggregate_id and occurred_at"
+      ],
+      deliverables:["Event schema Pydantic models","Abstract EventPublisher port + InMemoryEventPublisher stub","Domain use case publishing events through port — no infrastructure imports in domain layer"],
+      checkpoint:"Can you swap InMemoryEventPublisher for a real SQS publisher by changing only one line in app/main.py? If you need to change files in app/domain/ or app/application/ — the port abstraction is leaking."
+    },
+    {
+      label:"Day 7",
+      title:"FastAPI Wiring + Integration Tests + CI",
+      learn:"Wire all layers together in FastAPI using dependency injection. Integration tests validate the full stack — HTTP adapter → application service → domain → repository adapter — against a real database. This catches the class of bugs that unit tests and mocks miss entirely.",
+      learnItems:[
+        "FastAPI Depends wiring: inject concrete implementations (PostgreSQL repository, Redis blocklist, InMemoryEventPublisher) at startup — route handlers receive abstract ports, not concrete classes",
+        "Integration test strategy: real PostgreSQL via testcontainers or docker-compose service, real Alembic migrations run before test session — no mocking the database",
+        "pytest fixture scopes: session-scoped DB setup (run migrations once per test run), function-scoped transaction rollback (each test rolls back to clean state without re-migrating)",
+        "OpenAPI contract: Pydantic response models define the public API contract — adding required fields is a breaking change requiring /api/v2/ prefix"
+      ],
+      resources:[
+        res("FastAPI Testing — official documentation","https://fastapi.tiangolo.com/tutorial/testing/","doc"),
+        res("pytest documentation — official","https://docs.pytest.org/en/stable/","doc"),
+        res("testcontainers-python — spin up real DBs in tests","https://testcontainers-python.readthedocs.io/en/latest/","doc"),
+        res("SQLAlchemy 2.0 ORM quickstart","https://docs.sqlalchemy.org/en/20/orm/quickstart.html","doc")
+      ],
+      conceptQ:"Why is testing with a real PostgreSQL database in CI more valuable than mocking the repository? Name two specific bug categories that a real DB catches and an in-memory mock hides.",
+      build:"<b>Project:</b> Wire all layers and write the full integration pytest suite.",
+      buildItems:[
+        "app/main.py: create FastAPI app, wire PostgreSQL repository, Redis blocklist, InMemoryEventPublisher into route handlers via Depends",
+        "tests/test_auth.py: register user, login to get JWT, call protected endpoint, refresh token, logout, verify old token is rejected via blocklist",
+        "tests/test_contracts.py: full lifecycle — create DRAFT, activate (assert ContractActivated event published), record harvest, complete — assert invalid transition raises 422",
+        "Achieve 80%+ line coverage: pytest --cov=app --cov-report=term",
+        ".github/workflows/test.yml: spin up postgres + redis services, run alembic upgrade head, run pytest — fail on coverage below 80%"
+      ],
+      deliverables:["pytest suite passing 80% coverage against real PostgreSQL","GitHub Actions CI green on every push — postgres + redis services included","All layers wired: HTTP adapter → application service → domain → DB adapter with zero cross-layer leaks"],
+      checkpoint:"Deliberately break one domain invariant — allow DRAFT to jump to COMPLETED. Does a test catch it immediately? If not, the test suite has a gap. Add the missing test, then fix the invariant."
+    }
+  ]
+},
+{
+  title:"Week 4 — AWS Foundations: IAM, VPC and Terraform",
+  meta:"Phase 2 · ~24 hrs · Skills: IAM, VPC, Terraform, S3 remote state",
+  outcome:"<b>End state:</b> AgriChain AWS VPC with public and private subnets, S3 Terraform state backend, and all IAM roles provisioned via Terraform modules.",
+  capstone:"Build the AWS foundation for AgriChain with Terraform",
+  days:[
+    {
+      label:"Day 1-2",
+      title:"IAM: Identity, Trust, and Least Privilege",
+      learn:"IAM is the root of AWS security. Every other service inherits the IAM trust model. Understand it completely before using any other AWS service.",
+      learnItems:[
+        "IAM principals: IAM users (avoid in automation), IAM roles (prefer always), and federated identities",
+        "Permission boundaries vs SCPs (Service Control Policies) vs resource-based policies — when each layer applies",
+        "IRSA (IAM Roles for Service Accounts): how EKS pods get AWS credentials via projected service account tokens without static keys",
+        "AWS credential chain in boto3 and the AWS SDK: environment variables, ~/.aws/credentials, EC2 instance metadata, IRSA token"
+      ],
+      resources:[
+        res("IAM User Guide — AWS documentation","https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html","doc"),
+        res("AWS Security Best Practices whitepaper","https://docs.aws.amazon.com/whitepapers/latest/aws-security-best-practices/aws-security-best-practices.html","doc"),
+        res("AWS CloudTrail for IAM activity auditing","https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html","doc")
+      ],
+      conceptQ:"What is the difference between an IAM <b>identity-based policy attached to a role</b> and a <b>resource-based policy on an S3 bucket</b>? If both exist and conflict, which one wins?",
+      build:"<b>Project:</b> Create least-privilege IAM roles for AgriChain using Terraform.",
+      buildItems:[
+        "agrichain-ecs-task-role: access only to Secrets Manager (specific ARNs) and S3 photo bucket (specific prefix)",
+        "agrichain-ci-role: ECR push to agrichain repo only, S3 access to state backend bucket only — no EC2 or IAM modification",
+        "agrichain-data-glue-role: S3 read on lakehouse buckets (specific paths), Glue catalog write for agrichain database only",
+        "Use IAM policy conditions to restrict by resource ARN pattern — never use a wildcard asterisk as the resource"
+      ],
+      deliverables:["terraform/modules/iam/main.tf with all three roles and least-privilege policies committed"],
+      checkpoint:"Try to assume a role without the correct trust policy. Read the error message carefully — what does it tell you about the trust evaluation?"
+    },
+    {
+      label:"Day 3-4",
+      title:"VPC Design and Terraform Remote State",
+      learn:"VPC design determines your security boundary and operational blast radius. Get the CIDR layout right from day one — it is hard to change later.",
+      learnItems:[
+        "VPC CIDR planning, public vs private subnets, NAT Gateway (managed, ~$32/month per AZ) vs NAT Instance (self-managed, cheaper)",
+        "Security Groups are stateful and instance-scoped. NACLs are stateless and subnet-scoped — understand when each is the right tool",
+        "VPC gateway endpoint for S3: keeps S3 traffic off the public internet and avoids NAT Gateway data transfer charges",
+        "Terraform S3 backend with DynamoDB state locking: prevents concurrent applies from corrupting the state file"
+      ],
+      resources:[
+        res("Amazon VPC getting started guide","https://docs.aws.amazon.com/vpc/latest/userguide/vpc-getting-started.html","doc"),
+        res("Terraform AWS get started tutorials — official Hashicorp","https://developer.hashicorp.com/terraform/tutorials/aws-get-started","tutorial"),
+        res("Terraform best practices guide — free","https://www.terraform-best-practices.com/","doc"),
+        res("tfsec Terraform security scanner","https://aquasecurity.github.io/tfsec/","doc")
+      ],
+      conceptQ:"Your Lambda function in a private subnet cannot connect to S3. What is the cheapest fix that keeps all traffic off the public internet?",
+      build:"<b>Project:</b> Build the AgriChain VPC Terraform module and configure remote state.",
+      buildItems:[
+        "terraform/modules/vpc/main.tf: one VPC, 2 public and 2 private subnets across 2 availability zones",
+        "NAT Gateway in each public subnet for high-availability, plus S3 VPC gateway endpoint (free)",
+        "terraform/environments/dev/backend.tf: S3 remote state bucket with versioning, DynamoDB lock table",
+        "Run tfsec on the modules directory and fix any HIGH or CRITICAL findings before committing"
+      ],
+      deliverables:["VPC Terraform module with outputs: vpc_id, public_subnet_ids, private_subnet_ids","Remote state storing successfully in S3"],
+      checkpoint:"Run terraform plan twice in a row. Does the second run show exactly 0 changes? This is the idempotency test."
+    },
+    {
+      label:"Day 5",
+      title:"Terraform Module Design and CI Validation",
+      learn:"Reusable Terraform modules with clear interfaces are infrastructure as code. Hardcoded values with no interface are just infrastructure documentation.",
+      learnItems:[
+        "Module interface contract: all inputs in variables.tf with types and descriptions, all outputs in outputs.tf — no hardcoded values",
+        "for_each vs count: for_each is preferred when resources have meaningful names, count when you need N identical resources",
+        "Lifecycle meta-arguments: create_before_destroy prevents downtime, prevent_destroy protects production data, ignore_changes avoids drift loops",
+        "Infrastructure CI pipeline: terraform fmt -check, terraform validate, and checkov security scan — run before every plan or apply"
+      ],
+      resources:[
+        res("Terraform modules tutorial — official Hashicorp","https://developer.hashicorp.com/terraform/tutorials/modules/module","tutorial"),
+        res("Checkov IaC security and compliance scanner","https://www.checkov.io/","doc")
+      ],
+      conceptQ:"Why should Terraform modules never contain their own backend configuration block? Who should be responsible for configuring the backend?",
+      build:"<b>Project:</b> Add CI validation workflow for the Terraform code.",
+      buildItems:[
+        ".github/workflows/terraform-ci.yml: on every PR run terraform fmt -check, terraform validate, and checkov --directory terraform/",
+        "Write module README.md with an inputs and outputs table following terraform-docs conventions",
+        "Add terraform/examples/dev/ showing a complete example of calling the VPC and IAM modules",
+        "Add required_tags variable and enforce Project, Environment, and ManagedBy on all taggable resources"
+      ],
+      deliverables:["GitHub Actions Terraform CI workflow passing on every PR","All resources in every module tagged with required tags"],
+      checkpoint:"Introduce a deliberate type mismatch in a variable. Does terraform validate catch it before making any AWS API calls?"
+    }
+  ]
+},
+{
+  title:"Week 5 — AWS Containers: ECR, ECS Fargate and ALB",
+  meta:"Phase 2 · ~22 hrs · Skills: ECR, ECS Fargate, ALB, Secrets Manager",
+  outcome:"<b>End state:</b> AgriChain API running on ECS Fargate across 2 tasks, accessible via ALB with HTTPS termination, pulling all secrets from Secrets Manager.",
+  capstone:"Deploy AgriChain to ECS Fargate with production networking",
+  days:[
+    {
+      label:"Day 1-2",
+      title:"ECR Container Registry and Image Lifecycle",
+      learn:"ECR is the AWS-native container registry. Understand image tagging strategy, immutability, and lifecycle policies before any image goes to production.",
+      learnItems:[
+        "ECR private registry vs ECR Public: use private for all internal services, public only for open-source base images",
+        "Tag immutability: with IMMUTABLE tags enabled, existing tags cannot be overwritten — forces explicit versioning",
+        "Lifecycle policies: automatically expire old images to control storage costs and clean up stale artifacts",
+        "Amazon Inspector integration: ECR can trigger Inspector to scan images for OS and package vulnerabilities on push"
+      ],
+      resources:[
+        res("Amazon ECR User Guide","https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html","doc"),
+        res("ECR lifecycle policies documentation","https://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html","doc")
+      ],
+      conceptQ:"Why is deploying ECS tasks with the <b>:latest</b> tag dangerous in production? What happens when a new image is pushed and existing tasks restart?",
+      build:"<b>Project:</b> Create ECR repository via Terraform and push AgriChain images from GitHub Actions.",
+      buildItems:[
+        "terraform/modules/ecr/main.tf: private ECR repo, image_tag_mutability = IMMUTABLE, scan_on_push = true",
+        "Lifecycle policy: expire untagged images after 7 days, keep only the last 10 tagged images per prefix",
+        "GitHub Actions deploy job: docker build, docker tag with git SHA, aws ecr get-login-password, docker push — all via OIDC auth",
+        "Never use :latest — tag images with the full git commit SHA for complete traceability"
+      ],
+      deliverables:["ECR repository in Terraform with lifecycle policy","GitHub Actions pushing SHA-tagged images to ECR on main branch merge"],
+      checkpoint:"Look at the ECR scan results in the console after pushing. Are there any CRITICAL CVEs that Trivy missed locally?"
+    },
+    {
+      label:"Day 3-5",
+      title:"ECS Fargate Service, ALB, and Secrets Manager",
+      learn:"ECS Fargate removes the need to manage EC2 instances. You own only the task definition, service config, and networking — AWS owns everything else.",
+      learnItems:[
+        "ECS concepts: cluster is the namespace, service maintains desired count, task definition is the container blueprint",
+        "Fargate vs EC2 launch type: Fargate is simpler and safer, EC2 is cheaper at scale with Savings Plans",
+        "ALB target group health checks: the /health endpoint must return 200 for a task to receive traffic",
+        "Secrets Manager injection: secretsFrom in the task definition injects secrets at task startup — never use plain text environment variables"
+      ],
+      resources:[
+        res("Amazon ECS Developer Guide","https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html","doc"),
+        res("ECS Fargate task networking with awsvpc mode","https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking-awsvpc.html","doc"),
+        res("AWS Secrets Manager User Guide","https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html","doc"),
+        res("ECS deployment types and strategies","https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html","doc")
+      ],
+      conceptQ:"What happens to in-flight HTTP requests when ECS performs a rolling deployment and terminates the old task? How does ALB connection draining (deregistration delay) protect those requests?",
+      build:"<b>Project:</b> Deploy AgriChain to ECS Fargate with Terraform.",
+      buildItems:[
+        "Task definition: CPU 512, memory 1024, FARGATE launch type, secretsFrom pointing to DATABASE_URL and JWT_SECRET in Secrets Manager",
+        "ECS service: desired_count=2, rolling deployment with minimum_healthy_percent=50, maximum_percent=200",
+        "ALB: HTTPS listener on 443 with ACM certificate, HTTP listener on 80 redirects to HTTPS, target group health check on /health",
+        "Security groups: ALB SG allows inbound 443 from 0.0.0.0/0, ECS task SG allows inbound 8000 from ALB SG only"
+      ],
+      deliverables:[
+        "ECS service running 2 healthy Fargate tasks in private subnets",
+        "ALB with HTTPS routing to the AgriChain API",
+        "curl https://your-alb-dns/health returns {\"status\": \"ok\"}"
+      ],
+      checkpoint:"Stop one ECS task manually in the console. Does ECS automatically replace it? Does the ALB show only 1 healthy target during the replacement window?"
+    }
+  ]
+},
+{
+  title:"Week 6 — AWS Databases: RDS Aurora, ElastiCache and KMS",
+  meta:"Phase 2 · ~22 hrs · Skills: RDS Aurora, ElastiCache Redis, KMS, AWS Config",
+  outcome:"<b>End state:</b> AgriChain using RDS Aurora PostgreSQL with KMS encryption, ElastiCache Redis for JWT blacklisting, and AWS Config compliance rules.",
+  capstone:"Migrate AgriChain database to RDS Aurora and add session cache layer",
+  days:[
+    {
+      label:"Day 1-2",
+      title:"RDS Aurora PostgreSQL — Managed Database",
+      learn:"Aurora PostgreSQL gives you managed backups, read replicas, and faster failover than vanilla RDS. Understand the architecture differences.",
+      learnItems:[
+        "Aurora storage architecture: shared distributed storage across 3 AZs, separate from the compute instances",
+        "Multi-AZ: writer instance in one AZ, one or more readers in other AZs — failover promotes a reader in under 30 seconds",
+        "Cluster endpoints: use the cluster writer endpoint for writes, reader endpoint for read replicas — application must handle reconnection on failover",
+        "Parameter groups: tune max_connections to match your ECS task count times the pool size to avoid connection exhaustion"
+      ],
+      resources:[
+        res("Amazon RDS User Guide","https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html","doc"),
+        res("Amazon Aurora concepts and architecture","https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.html","doc"),
+        res("RDS Multi-AZ deployments explained","https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html","doc")
+      ],
+      conceptQ:"Your application only uses the cluster writer endpoint. During an Aurora failover, what happens to your connection pool? How long will the application return errors?",
+      build:"<b>Project:</b> Provision RDS Aurora PostgreSQL with Terraform and migrate Alembic migrations to run against it.",
+      buildItems:[
+        "terraform/modules/rds/main.tf: aurora-postgresql engine, cluster with 2 instances (writer and reader), storage_encrypted=true with KMS key",
+        "DB subnet group using private subnets only — no publicly_accessible=true on any instance",
+        "Store DB master credentials in Secrets Manager (auto-rotation enabled) — update ECS task secretsFrom",
+        "Test: run alembic upgrade head against the RDS endpoint and verify all tables were created"
+      ],
+      deliverables:["Aurora cluster running with writer and reader instances","Alembic migrations completed successfully against RDS endpoint"],
+      checkpoint:"Perform a forced failover by rebooting the writer with failover enabled. Does the application reconnect within 60 seconds?"
+    },
+    {
+      label:"Day 3",
+      title:"ElastiCache Redis for JWT Blacklisting",
+      learn:"ElastiCache Redis provides sub-millisecond access for data that cannot wait for a database round trip. JWT blacklisting on logout is a perfect use case.",
+      learnItems:[
+        "ElastiCache vs MemoryDB: use ElastiCache for cache workloads, MemoryDB for Redis when you need durability guarantees",
+        "Redis cluster mode disabled vs enabled: cluster mode is for multi-shard horizontal scaling, single-node is simpler for most apps",
+        "ElastiCache in-transit encryption with AUTH token: both must be enabled for security compliance",
+        "Eviction policies: allkeys-lru for pure cache (evict least recently used), noeviction for session store (fail rather than evict)"
+      ],
+      resources:[
+        res("Amazon ElastiCache for Redis User Guide","https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html","doc"),
+        res("ElastiCache Redis best practices","https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/BestPractices.html","doc")
+      ],
+      conceptQ:"Why would you configure <b>noeviction</b> for a session/token store but <b>allkeys-lru</b> for a page cache? What is the operational difference when memory fills up?",
+      build:"<b>Project:</b> Add ElastiCache Redis to AgriChain for JWT token blacklisting on logout.",
+      buildItems:[
+        "terraform/modules/elasticache/main.tf: Redis 7.x, in-transit encryption enabled, auth_token from Secrets Manager",
+        "AgriChain API logout endpoint: SETEX jti:{token_jti} 1 {ttl_remaining_seconds} in Redis when user logs out",
+        "Auth middleware: after verifying JWT signature, check if the JTI key exists in Redis — return 401 if blacklisted",
+        "Security group: allow Redis port 6379 inbound from ECS task security group only"
+      ],
+      deliverables:["ElastiCache Redis cluster running in private subnets","Logout endpoint adds JTI to Redis blacklist, subsequent requests with that token return 401"],
+      checkpoint:"Log out of the API, then replay the old JWT token on a protected endpoint. Does the response change from 200 to 401?"
+    },
+    {
+      label:"Day 4-5",
+      title:"KMS Key Management and AWS Config Compliance",
+      learn:"KMS is the AWS encryption keystore. Every sensitive resource should use a customer-managed key (CMK). AWS Config continuously audits compliance.",
+      learnItems:[
+        "Envelope encryption: KMS CMK never leaves AWS — it encrypts data keys that are used to encrypt your actual data",
+        "Key policies are required: IAM policies alone cannot grant KMS access — the key policy must explicitly allow the principal",
+        "Annual automatic key rotation for CMKs: AWS generates new key material, old versions remain for decryption, transparent to applications",
+        "AWS Config managed rules: continuously evaluate resource configurations against compliance rules and flag NON_COMPLIANT resources"
+      ],
+      resources:[
+        res("AWS KMS Developer Guide","https://docs.aws.amazon.com/kms/latest/developerguide/overview.html","doc"),
+        res("AWS Config managed rules reference","https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html","doc")
+      ],
+      conceptQ:"If you schedule a KMS key for deletion and then delete it, what happens to all the data that was encrypted with it? How many days does the minimum waiting period give you to cancel?",
+      build:"<b>Project:</b> Create KMS keys for all AgriChain data stores and enable AWS Config compliance rules.",
+      buildItems:[
+        "Three KMS CMKs: one for RDS, one for S3 buckets, one for Secrets Manager — each with least-privilege key policies",
+        "Enable AWS Config with rules: rds-storage-encrypted, s3-bucket-server-side-encryption-enabled, secretsmanager-rotation-enabled-check",
+        "Terraform aws_config_config_rule resources with EventBridge rule: NON_COMPLIANT finding triggers SNS alert to email",
+        "Verify in the AWS console that RDS, S3, and Secrets Manager all show as encrypted with the correct CMK"
+      ],
+      deliverables:["KMS CMKs managed in Terraform","AWS Config dashboard showing all rules COMPLIANT for AgriChain resources"],
+      checkpoint:"What is the exact AWS Config rule name that would flag a new RDS instance created without encryption, even if someone bypasses Terraform?"
+    }
+  ]
+},
+{
+  title:"Week 7 — Kubernetes on AWS: EKS, Helm and IRSA",
+  meta:"Phase 2 · ~26 hrs · Skills: EKS, Kubernetes core, Helm, IRSA, HPA, ArgoCD",
+  outcome:"<b>End state:</b> AgriChain migrated from ECS to EKS cluster, deployed via Helm chart, with IRSA-based AWS credential access and HPA configured.",
+  capstone:"Migrate AgriChain from ECS Fargate to EKS",
+  days:[
+    {
+      label:"Day 1-2",
+      title:"Kubernetes Core Concepts",
+      learn:"Kubernetes operationalizes desired state. Learn the object model and control loops before touching EKS.",
+      learnItems:[
+        "Pods, Deployments, and ReplicaSets: why you never create Pods directly — Deployments manage ReplicaSets which manage Pods",
+        "Services: ClusterIP for internal, NodePort for node-level, LoadBalancer for external. Ingress routes HTTP at Layer 7",
+        "ConfigMaps for non-sensitive config, Secrets for sensitive config — but in production Secrets should come from an external secret store",
+        "Probes: readinessProbe gates traffic (pod not Ready = removed from Service endpoints), livenessProbe gates restarts — misconfiguring either causes downtime"
+      ],
+      resources:[
+        res("Kubernetes Concepts — official documentation","https://kubernetes.io/docs/concepts/","doc"),
+        res("Kubernetes the Hard Way — conceptual deep dive by Kelsey Hightower","https://github.com/kelseyhightower/kubernetes-the-hard-way","tutorial"),
+        res("Kubernetes debugging guide — official","https://kubernetes.io/docs/tasks/debug/","doc"),
+        res("Kustomize documentation","https://kustomize.io/","doc")
+      ],
+      conceptQ:"What is the precise difference between a container in <b>CrashLoopBackOff</b> vs a container that is <b>Running</b> but not <b>Ready</b>? Name one root cause for each state.",
+      build:"<b>Project:</b> Write raw Kubernetes manifests for AgriChain before converting to Helm.",
+      buildItems:[
+        "k8s/base/deployment.yaml: 2 replicas, resource requests (cpu:250m, memory:256Mi) and limits (cpu:500m, memory:512Mi)",
+        "Readiness probe: HTTP GET /health every 10s, failure threshold 3. Liveness probe: HTTP GET /health every 30s, failure threshold 3",
+        "k8s/base/service.yaml: ClusterIP service on port 80 targeting container port 8000",
+        "Deploy to local minikube or kind cluster and confirm pods reach Running and Ready status"
+      ],
+      deliverables:["Raw Kubernetes manifests committed to k8s/base/","Pods reach Running+Ready state in local cluster"],
+      checkpoint:"Delete the /health route from the FastAPI app. What happens to the pod's Ready status? What happens to Service endpoint routing?"
+    },
+    {
+      label:"Day 3",
+      title:"EKS Cluster Provisioning with Terraform",
+      learn:"EKS manages the Kubernetes control plane for you. You are responsible for the data plane (nodes), add-ons, IRSA configuration, and access control.",
+      learnItems:[
+        "EKS node options: managed node groups (recommended for most), Fargate profiles (serverless pods), Karpenter (flexible auto-provisioning)",
+        "EKS add-ons: vpc-cni (AWS networking for pods), CoreDNS (cluster DNS), kube-proxy (Service routing), aws-ebs-csi-driver (persistent volumes)",
+        "OIDC identity provider: EKS creates an OIDC provider that enables pods to exchange Kubernetes service account tokens for AWS IAM role credentials",
+        "EKS API server access: public endpoint (easier, less secure) vs private endpoint (requires VPN/bastion, more secure)"
+      ],
+      resources:[
+        res("Amazon EKS User Guide","https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html","doc"),
+        res("EKS Best Practices Guide — official AWS","https://docs.aws.amazon.com/eks/latest/best-practices/introduction.html","doc"),
+        res("Karpenter documentation","https://karpenter.sh/docs/","doc")
+      ],
+      conceptQ:"Why does EKS assign each pod its own VPC IP address? What component is responsible for this and what AWS resource does it consume?",
+      build:"<b>Project:</b> Provision EKS cluster using Terraform and verify access.",
+      buildItems:[
+        "EKS cluster version 1.31, managed node group with 2 t3.medium instances in private subnets",
+        "Add-ons: vpc-cni, coredns, kube-proxy, aws-ebs-csi-driver — all managed by Terraform",
+        "Enable OIDC provider for IRSA: aws_iam_openid_connect_provider resource pointing to EKS cluster OIDC URL",
+        "Configure local kubectl access: aws eks update-kubeconfig, then kubectl get nodes to verify"
+      ],
+      deliverables:["EKS cluster running with 2 nodes in Terraform state","kubectl get nodes shows both nodes in Ready status"],
+      checkpoint:"Run kubectl describe node on one node. What is the Allocatable CPU and memory? How many pods can this node run?"
+    },
+    {
+      label:"Day 4-5",
+      title:"Helm Chart, ALB Ingress Controller, and IRSA",
+      learn:"Helm packages Kubernetes manifests into versioned, configurable charts. ALB Ingress Controller creates real AWS ALBs from Ingress objects.",
+      learnItems:[
+        "Helm chart structure: Chart.yaml (metadata), values.yaml (default config), templates/ (Kubernetes manifests with Go template syntax)",
+        "Values override hierarchy: values.yaml base, then values-dev.yaml overlay, then --set flag at install/upgrade time",
+        "AWS Load Balancer Controller: watches Kubernetes Ingress objects and calls AWS APIs to create and configure ALBs",
+        "IRSA for system components: the ALB Controller pod needs an IAM role to create ALBs — this role is attached via IRSA annotation on its ServiceAccount"
+      ],
+      resources:[
+        res("Helm documentation — getting started","https://helm.sh/docs/intro/quickstart/","doc"),
+        res("AWS Load Balancer Controller installation guide","https://kubernetes-sigs.github.io/aws-load-balancer-controller/","doc"),
+        res("Helm chart best practices","https://helm.sh/docs/chart_best_practices/","doc")
+      ],
+      conceptQ:"What does <b>helm upgrade --atomic</b> do differently from a standard upgrade? What happens to the release if the new pods fail their health checks?",
+      build:"<b>Project:</b> Convert AgriChain k8s manifests to a Helm chart and deploy to EKS.",
+      buildItems:[
+        "helm/agrichain/Chart.yaml, values.yaml with image.repository, image.tag, replicaCount, resources, ingress sections",
+        "Ingress manifest: kubernetes.io/ingress.class: alb, scheme: internet-facing, target-type: ip, HTTPS on 443 with ACM cert ARN annotation",
+        "External Secrets Operator: ESO pulls DATABASE_URL and JWT_SECRET from Secrets Manager and writes them as K8s Secrets",
+        "HorizontalPodAutoscaler: minReplicas=2, maxReplicas=6, target CPU utilization 70%"
+      ],
+      deliverables:[
+        "helm list shows agrichain release at revision 1 with STATUS deployed",
+        "ALB Ingress routes HTTPS traffic to AgriChain pods",
+        "kubectl get hpa shows agrichain HPA with correct min and max replicas"
+      ],
+      checkpoint:"Run helm upgrade agrichain --set image.tag=does-not-exist --atomic. Does Helm automatically roll back to the previous working revision?"
+    }
+  ]
+},
+{
+  title:"Week 8 — AWS Integration: EventBridge, SQS and Lambda",
+  meta:"Phase 3 · ~22 hrs · Skills: EventBridge, SQS, Lambda, Step Functions, boto3",
+  outcome:"<b>End state:</b> Harvest events flow from AgriChain API through EventBridge to SQS to a Lambda consumer that writes partitioned JSON to the S3 landing zone.",
+  capstone:"Add event-driven harvest pipeline to AgriChain",
+  days:[
+    {
+      label:"Day 1-2",
+      title:"EventBridge and SQS Messaging Patterns",
+      learn:"AWS messaging services decouple write-time latency from background business processing. Understand the semantic guarantees before choosing one.",
+      learnItems:[
+        "EventBridge event bus: content-based routing rules, schema registry, archive for replay, event patterns as JSON filter",
+        "SQS at-least-once delivery: a message is delivered at least once but potentially more — your consumer must be idempotent",
+        "Visibility timeout: when a consumer receives a message it becomes invisible for the timeout duration — must process and delete before timeout expires",
+        "Dead-letter queue (DLQ): messages that exceed maxReceiveCount are moved here — always monitor DLQ depth as a critical metric"
+      ],
+      resources:[
+        res("Amazon EventBridge User Guide","https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html","doc"),
+        res("Amazon SQS Developer Guide","https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html","doc"),
+        res("AWS cloud messaging patterns — prescriptive guidance","https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/messaging.html","doc")
+      ],
+      conceptQ:"Your SQS consumer has visibility timeout of 30 seconds but processing one message takes 45 seconds. What happens to the message and why? How do you fix it correctly?",
+      build:"<b>Project:</b> Create the AgriChain event infrastructure via Terraform.",
+      buildItems:[
+        "Custom EventBridge bus: agrichain-events with archive enabled (7-day retention for replay)",
+        "EventBridge rule: event pattern matching source=agrichain.api and detail-type=HarvestLogged",
+        "SQS standard queue: agrichain-harvest-queue with DLQ agrichain-harvest-dlq, maxReceiveCount=3, KMS encryption",
+        "SQS resource policy allowing EventBridge to send messages to the queue"
+      ],
+      deliverables:["EventBridge custom bus and routing rule in Terraform","Test event sent via CLI appears in SQS queue within 5 seconds"],
+      checkpoint:"What does a message look like in the DLQ after 3 failed processing attempts? Read the message body and attributes."
+    },
+    {
+      label:"Day 3-4",
+      title:"Lambda Consumer and S3 Landing Zone",
+      learn:"Lambda processes SQS messages without managing servers. Understand the concurrency model and partial batch failure handling.",
+      learnItems:[
+        "Lambda execution environment: cold start (new instance) vs warm start (reused instance) — implications for latency-sensitive consumers",
+        "SQS event source mapping: batch_size controls how many messages Lambda receives per invocation, bisect_batch_on_function_error isolates failures",
+        "Partial batch failures: return batchItemFailures to mark specific message IDs as failed, letting the rest of the batch succeed",
+        "S3 Hive-style partitioning: key prefix year=YYYY/month=MM/day=DD/ enables partition pruning in Athena to reduce scan cost"
+      ],
+      resources:[
+        res("AWS Lambda Developer Guide","https://docs.aws.amazon.com/lambda/latest/dg/welcome.html","doc"),
+        res("Lambda SQS event source mapping configuration","https://docs.aws.amazon.com/lambda/latest/dg/with-sqs.html","doc"),
+        res("S3 object key naming for data lakes — AWS prescriptive guidance","https://docs.aws.amazon.com/prescriptive-guidance/latest/defining-bucket-names-data-lakes/","doc")
+      ],
+      conceptQ:"Why should a Lambda batch consumer return <b>batchItemFailures</b> instead of raising a top-level exception when only one out of ten messages fails validation?",
+      build:"<b>Project:</b> Write the harvest consumer Lambda and provision the S3 lakehouse landing bucket.",
+      buildItems:[
+        "lambda/harvest_consumer/handler.py: iterate SQS records, parse JSON body, validate schema, write to S3 as newline-delimited JSON",
+        "S3 key: s3://agrichain-lake/raw/harvests/year=YYYY/month=MM/day=DD/{uuid}.json",
+        "AgriChain API: after INSERT to harvest_records in PostgreSQL, call eventbridge.put_events with the harvest payload",
+        "Lambda returns {batchItemFailures: [{itemIdentifier: record.messageId}]} for any record that fails validation"
+      ],
+      deliverables:[
+        "Lambda function deployed via Terraform with SQS event source mapping",
+        "Harvest objects landing in S3 with correct Hive partition prefix",
+        "DLQ depth is zero after 10 successful test harvest events"
+      ],
+      checkpoint:"Send one malformed harvest event (missing farm_id). Does only that message end up in the DLQ while the other 9 process successfully?"
+    },
+    {
+      label:"Day 5",
+      title:"Step Functions — Contract Payment State Machine",
+      learn:"Step Functions orchestrate multi-step business workflows with built-in retry, error handling, and audit history.",
+      learnItems:[
+        "Standard vs Express workflows: Standard has 1-year history and at-least-once execution, Express has 90-day history and at-least-once with higher throughput",
+        "Task state: calls a Lambda, ECS task, or SDK integration. Choice state: conditional branching. Wait state: pauses for callback token or timestamp",
+        "Retry configuration: backoffRate multiplies the interval each attempt, jitterStrategy=FULL avoids thundering herd",
+        "SDK integrations: Step Functions can call DynamoDB, SNS, SQS, ECS directly without writing a Lambda wrapper function"
+      ],
+      resources:[
+        res("AWS Step Functions Developer Guide","https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html","doc"),
+        res("Step Functions workshop — free hands-on lab","https://catalog.workshops.aws/stepfunctions/en-US","tutorial")
+      ],
+      conceptQ:"When would you use a <b>Wait state with a callback token (.waitForTaskToken)</b> instead of just polling in a loop for a human approval step?",
+      build:"<b>Project:</b> Create an AgriChain contract payment processing state machine.",
+      buildItems:[
+        "States: ValidateHarvest (Lambda) to CalculatePayment (Lambda) to CheckApprovalRequired (Choice: gross_payment > 50000) to ManualApproval (Wait) or ProcessPayment",
+        "CalculatePayment Lambda: compute gross_payment = weight_kg * price_per_kg, net_payment = gross_payment * 0.97 (3% withholding)",
+        "Catch on CalculatePayment: ResultPath=$.error routes to NotifyAdmin Lambda on any failure",
+        "API endpoint: POST /contracts/{contract_id}/process-payment starts a new state machine execution"
+      ],
+      deliverables:["Step Functions state machine deployed","Execution history in console shows correct state transitions for a test harvest"],
+      checkpoint:"Force a failure in CalculatePayment by passing an invalid harvest ID. Does the execution show the Catch state was triggered?"
+    }
+  ]
+},
+{
+  title:"Week 9 — AWS Data: Glue, Athena, dbt and Data Quality",
+  meta:"Phase 3 · ~26 hrs · Skills: Glue, Lake Formation, Athena, dbt, Kinesis, Great Expectations",
+  outcome:"<b>End state:</b> S3 lakehouse with Bronze/Silver/Gold zones, Glue catalog, dbt transformations running on Athena, and GX data quality checkpoints.",
+  capstone:"Build the AgriChain analytics lakehouse on S3",
+  days:[
+    {
+      label:"Day 1-2",
+      title:"S3 Lakehouse Architecture and Glue Catalog",
+      learn:"The lakehouse pattern stores every stage of transformation durably. Understand the medallion zones and how Glue catalogs the schema.",
+      learnItems:[
+        "Medallion architecture: Bronze zone stores raw, immutable source data. Silver cleans and types it. Gold produces business-level aggregates for BI tools",
+        "Glue Data Catalog: a managed Hive Metastore. Glue Crawlers scan S3 and infer schemas, writing table definitions to the catalog",
+        "Parquet columnar format: Athena scans only the columns queried and skips row groups via statistics — massive cost reduction vs JSON",
+        "Lake Formation: sits on top of Glue Catalog to provide column-level and row-level access control on the same data"
+      ],
+      resources:[
+        res("AWS Glue Developer Guide","https://docs.aws.amazon.com/glue/latest/dg/what-is-glue.html","doc"),
+        res("AWS Lake Formation documentation","https://docs.aws.amazon.com/lake-formation/latest/dg/what-is-lake-formation.html","doc"),
+        res("Medallion architecture — Databricks glossary (free)","https://www.databricks.com/glossary/medallion-architecture","doc"),
+        res("Apache Parquet columnar format motivation","https://parquet.apache.org/docs/overview/motivation/","doc")
+      ],
+      conceptQ:"Athena charges per data scanned in TB. A 1TB JSON file costs more to query than the same data in 1TB Parquet. Why? What two Parquet features reduce the bytes scanned?",
+      build:"<b>Project:</b> Set up the AgriChain S3 lakehouse buckets, Glue crawler, and first ETL job.",
+      buildItems:[
+        "Three S3 buckets via Terraform: agrichain-lake-raw, agrichain-lake-silver, agrichain-lake-gold — all with versioning, KMS encryption, and lifecycle to Glacier after 90 days",
+        "Glue Crawler on prefix raw/harvests/ — schedule daily, creates agrichain_raw.harvests table in Glue catalog",
+        "Glue ETL job (Python shell): read raw JSON from Bronze, parse and cast types, write to Silver as Parquet partitioned by date",
+        "Test Athena query against Silver: SELECT farm_id, SUM(weight_kg) AS total_kg FROM harvests GROUP BY farm_id ORDER BY total_kg DESC"
+      ],
+      deliverables:["Glue catalog shows agrichain_raw.harvests and agrichain_silver.harvests tables","Athena query returns correct aggregates from Silver zone","Silver zone data is in Parquet format"],
+      checkpoint:"Run the same SELECT query against the Bronze (JSON) and Silver (Parquet) tables. Compare the Data scanned bytes in Athena query history. What is the reduction ratio?"
+    },
+    {
+      label:"Day 3-4",
+      title:"dbt on Athena — Silver to Gold Transformations",
+      learn:"dbt brings software engineering practices to SQL transformations: version control, dependency graphs, automated tests, and generated documentation.",
+      learnItems:[
+        "dbt model layers: staging models rename and cast source columns, intermediate models encode business logic, mart models produce analytics-ready tables",
+        "ref() macro: the foundation of dbt's DAG — ref('stg_harvests') makes dbt understand that fct_harvest_revenue depends on stg_harvests",
+        "dbt tests: schema.yml tests (not_null, unique, accepted_values, relationships) run as SQL queries that return zero rows if passing",
+        "dbt docs generate: creates a static site with model descriptions, column documentation, and an interactive lineage graph"
+      ],
+      resources:[
+        res("dbt Core documentation","https://docs.getdbt.com/docs/introduction","doc"),
+        res("dbt Fundamentals course — free on dbt Learn","https://learn.getdbt.com/courses/dbt-fundamentals","tutorial"),
+        res("dbt best practices guide","https://docs.getdbt.com/guides/best-practices","doc")
+      ],
+      conceptQ:"What SQL does <b>dbt test --select fct_harvest_revenue</b> actually run against Athena for a not_null test on the harvest_id column? Where does it fail vs where does a query return wrong results?",
+      build:"<b>Project:</b> Build the AgriChain dbt project using the dbt-athena-community adapter.",
+      buildItems:[
+        "models/staging/stg_harvests.sql: rename raw column names to clean names, cast types, filter WHERE farm_id IS NOT NULL",
+        "models/marts/fct_harvest_revenue.sql: JOIN stg_harvests with contracts on contract_id, compute gross_payment and net_payment (3% withholding)",
+        "models/marts/dim_farm.sql: one row per farm with total_area_ha, active_contract_count, lifetime_harvest_kg",
+        "schema.yml: not_null and unique tests on harvest_id, accepted_values test on quality_grade in ['A','B','C','D']"
+      ],
+      deliverables:[
+        "dbt project with 3 models (1 staging, 2 marts) committed",
+        "dbt test runs with zero failures against live Athena data",
+        "dbt docs generate produces lineage: stg_harvests feeds into both fct_harvest_revenue and dim_farm"
+      ],
+      checkpoint:"Insert a row with NULL harvest_id directly into the Silver zone S3 file. Run dbt test — does the not_null test fail and stop the Gold layer from being produced?"
+    },
+    {
+      label:"Day 5",
+      title:"Great Expectations Data Quality and Kinesis Streaming",
+      learn:"Data quality validation as code prevents bad data from silently propagating to dashboards. Kinesis enables real-time ingestion alongside the batch pipeline.",
+      learnItems:[
+        "Great Expectations: Expectation (one assertion), Suite (a collection), Checkpoint (executes suite against a dataset, produces Data Docs)",
+        "Kinesis Data Streams: ordered per shard, at-least-once, partition key determines shard — hot shards cause throughput throttling",
+        "Kinesis Firehose: reads from a Kinesis stream (or directly from producers), buffers, optionally transforms via Lambda, delivers to S3",
+        "When to use Kinesis vs SQS: Kinesis for ordered streams with multiple independent readers, SQS for point-to-point processing with dead-lettering"
+      ],
+      resources:[
+        res("Great Expectations documentation","https://docs.greatexpectations.io/docs/","doc"),
+        res("Amazon Kinesis Data Streams documentation","https://docs.aws.amazon.com/streams/latest/dev/introduction.html","doc"),
+        res("Amazon Kinesis Data Firehose documentation","https://docs.aws.amazon.com/firehose/latest/dev/what-is-this-service.html","doc")
+      ],
+      conceptQ:"You have a Kinesis stream with 3 shards. All events from farm_id='FARM001' always land on shard 1. What is wrong with your partition key design? What would you use instead?",
+      build:"<b>Project:</b> Add Great Expectations checkpoint and Kinesis real-time ingestion path.",
+      buildItems:[
+        "GX checkpoint on Silver harvests: expect_column_values_to_not_be_null on farm_id, expect_column_values_to_be_between on weight_kg (0, 10000), expect_column_values_to_be_in_set on quality_grade",
+        "Kinesis Data Stream: agrichain-harvest-stream, 1 shard in dev, Firehose delivery to raw/realtime/ S3 prefix",
+        "High-frequency API endpoint POST /harvests/bulk: puts events to Kinesis instead of EventBridge for throughput",
+        "Add GX checkpoint run as the final step of the Glue ETL job — fail the job if any critical expectations fail"
+      ],
+      deliverables:[
+        "GX checkpoint passes on valid Silver data, fails on injected bad data with clear error output",
+        "Kinesis to Firehose to S3 pipeline delivering harvest records with under 60-second latency"
+      ],
+      checkpoint:"Inject a harvest record with weight_kg = -5 into the Silver zone. Does the Glue job fail at the GX checkpoint step and not write corrupted data to the Gold zone?"
+    }
+  ]
+},
+{
+  title:"Week 10 — CI/CD: GitHub Actions OIDC and ArgoCD GitOps",
+  meta:"Phase 3 · ~22 hrs · Skills: GitHub Actions, AWS OIDC, ArgoCD, Argo Rollouts",
+  outcome:"<b>End state:</b> Full GitOps pipeline — code push triggers CI, builds image, pushes to ECR via OIDC, Image Updater opens PR, ArgoCD syncs to EKS.",
+  capstone:"Automate the full AgriChain deployment lifecycle with GitHub Actions and ArgoCD",
+  days:[
+    {
+      label:"Day 1-2",
+      title:"GitHub Actions with AWS OIDC — No Static Keys",
+      learn:"Modern CI/CD authenticates to AWS using short-lived OIDC tokens. This eliminates the security risk of storing long-lived IAM access keys as secrets.",
+      learnItems:[
+        "OIDC flow: GitHub Actions requests a JWT from GitHub's OIDC provider, presents it to AWS STS AssumeRoleWithWebIdentity, receives 1-hour credentials",
+        "IAM trust policy for GitHub OIDC: the Condition block restricts which repository and branch can assume the role — prevents lateral movement",
+        "Reusable workflows (.github/workflows/shared-*.yml): define CI steps once, call from any repo or workflow — avoids copy-paste drift",
+        "Security scanning in CI: gitleaks prevents secrets in commits, Trivy scans images, checkov scans Terraform — run all three before any deploy"
+      ],
+      resources:[
+        res("GitHub Actions documentation","https://docs.github.com/en/actions","doc"),
+        res("Configuring OIDC with AWS — GitHub documentation","https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services","doc"),
+        res("GitHub Actions security hardening guide","https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions","doc"),
+        res("AWS CodePipeline User Guide","https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome.html","doc")
+      ],
+      conceptQ:"Why does OIDC authentication eliminate the need to store <b>AWS_ACCESS_KEY_ID</b> and <b>AWS_SECRET_ACCESS_KEY</b> as GitHub Secrets? What is the maximum credential lifetime?",
+      build:"<b>Project:</b> Build the AgriChain CI/CD pipelines using OIDC and GitHub Actions.",
+      buildItems:[
+        ".github/workflows/ci.yml: trigger on every PR — run pytest, Trivy image scan, and gitleaks secret scan in parallel jobs",
+        ".github/workflows/deploy.yml: trigger on push to main — build Docker image, tag with git SHA, push to ECR using OIDC (no AWS keys in Secrets)",
+        "Terraform: aws_iam_openid_connect_provider for GitHub OIDC, IAM role with condition StringEquals token.actions.githubusercontent.com:sub repo:your-org/agrichain:ref:refs/heads/main",
+        "Add gitleaks step before Docker build — block the workflow if any secrets are detected in the commit diff"
+      ],
+      deliverables:["CI pipeline with pytest, Trivy, and gitleaks passing on every PR","Deploy pipeline pushing SHA-tagged images to ECR using OIDC — zero static AWS keys in GitHub Secrets"],
+      checkpoint:"Remove the branch condition from the IAM trust policy (the StringEquals on the ref). What attack does that now enable? Add the condition back."
+    },
+    {
+      label:"Day 3-4",
+      title:"ArgoCD GitOps — Git as the Source of Truth",
+      learn:"GitOps externalizes the deployment decision to Git. The cluster continuously reconciles to match the Git state — no imperative kubectl apply commands.",
+      learnItems:[
+        "Four GitOps principles: declarative system description, versioned and immutable state, pulled by the cluster (not pushed), continuously reconciled",
+        "ArgoCD App of Apps: a root Application manages child Applications — one source of truth for the entire cluster topology",
+        "Sync policies: auto-sync lets ArgoCD apply changes when Git changes, self-heal makes ArgoCD revert manual changes to match Git",
+        "ArgoCD Image Updater: watches an image registry, detects new tags matching a semver or commit-sha pattern, writes back to the GitOps repository via PR"
+      ],
+      resources:[
+        res("ArgoCD documentation","https://argo-cd.readthedocs.io/en/stable/","doc"),
+        res("OpenGitOps principles specification","https://opengitops.dev/","doc"),
+        res("ArgoCD Image Updater documentation","https://argocd-image-updater.readthedocs.io/en/stable/","doc")
+      ],
+      conceptQ:"What is the operational difference between ArgoCD <b>self-heal</b> and <b>auto-sync</b>? Why would you enable self-heal even when using manual sync for production promotions?",
+      build:"<b>Project:</b> Install ArgoCD on EKS and set up the AgriChain GitOps repository.",
+      buildItems:[
+        "Install ArgoCD via Helm into the argocd namespace on EKS, expose UI via port-forward initially",
+        "Create gitops/ repository: gitops/apps/agrichain/application.yaml — ArgoCD Application pointing to helm/agrichain chart",
+        "App of Apps: gitops/apps/root-app.yaml manages agrichain app plus external-secrets-operator app",
+        "Configure ArgoCD Image Updater: watch ECR for new SHA tags, write back image tag to values.yaml in gitops repo via PR"
+      ],
+      deliverables:[
+        "ArgoCD running on EKS, application showing Healthy and Synced",
+        "End-to-end pipeline: push code, CI builds image, ECR receives new tag, Image Updater opens PR, merge PR, ArgoCD syncs EKS"
+      ],
+      checkpoint:"Manually kubectl edit the AgriChain deployment to change the replica count. Does ArgoCD detect the drift and show OutOfSync within 3 minutes?"
+    },
+    {
+      label:"Day 5",
+      title:"Deployment Strategies — Canary Releases with Argo Rollouts",
+      learn:"Different deployment strategies suit different risk tolerances. Canary releases let you validate new versions against production traffic before full promotion.",
+      learnItems:[
+        "Rolling update: replaces old pods gradually. Risk: old and new versions handle requests simultaneously during rollout",
+        "Blue-green: two complete environments, switch the load balancer. Risk: 2x resource cost during the switch window",
+        "Canary: route N% of traffic to new version, measure error rate and latency, then promote or rollback. Risk: requires traffic splitting infrastructure",
+        "Argo Rollouts: extends Kubernetes Deployments with canary and blue-green support, analysis runs, and Prometheus metric checks"
+      ],
+      resources:[
+        res("Kubernetes Deployment strategy documentation","https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy","doc"),
+        res("Argo Rollouts documentation","https://argoproj.github.io/argo-rollouts/","doc")
+      ],
+      conceptQ:"Your AgriChain canary at 10% traffic shows 0.8% error rate vs 0.1% baseline. The SLO allows 1.0% errors. Do you promote, hold, or rollback? What additional signal would help you decide?",
+      build:"<b>Project:</b> Implement canary deployment for AgriChain using Argo Rollouts.",
+      buildItems:[
+        "Install Argo Rollouts controller and kubectl plugin on EKS",
+        "Convert helm/agrichain Deployment to a Rollout resource: canary strategy with steps 10%, pause 5min, 50%, pause 5min, 100%",
+        "AnalysisTemplate: query CloudWatch metric for HTTP 5xx error rate — abort rollout if rate exceeds 1% during any pause step",
+        "Document rollback procedure in docs/runbooks/rollback.md: kubectl argo rollouts abort, argo rollouts undo"
+      ],
+      deliverables:["AgriChain deployed as Argo Rollout with canary strategy","Successful canary promotion visible in Argo Rollouts UI or kubectl plugin"],
+      checkpoint:"Deploy a version that always returns 500 for 5% of requests. Does the AnalysisTemplate abort the rollout before it reaches 100%?"
+    }
+  ]
+},
+{
+  title:"Week 11 — Observability, Security and Incident Readiness",
+  meta:"Phase 4 · ~24 hrs · Skills: CloudWatch, X-Ray, GuardDuty, Security Hub, WAF, FinOps",
+  outcome:"<b>End state:</b> CloudWatch dashboard with composite alarms, X-Ray service map, GuardDuty enabled, WAF protecting ALB, AWS Config compliant, and 3 tested runbooks.",
+  capstone:"Make AgriChain production-ready: fully observable, secure, and operable",
+  days:[
+    {
+      label:"Day 1-2",
+      title:"CloudWatch Observability and AWS X-Ray Tracing",
+      learn:"Production visibility comes from three signals: metrics (what happened), logs (what was the detail), and traces (what was the path through the system).",
+      learnItems:[
+        "CloudWatch metric namespaces: AWS/ECS, AWS/RDS, AWS/ALB each publish dozens of metrics automatically — know which ones matter for latency, errors, and saturation",
+        "Custom metrics: use PutMetricData for business signals (contracts_created_count, harvest_payment_total) that AWS does not provide",
+        "Composite alarms: combine multiple metric alarms with AND or OR operators — fire only when multiple conditions are true simultaneously to reduce alert noise",
+        "X-Ray service map: shows all components a request touched, with P50/P99 latency and error rate per segment — identifies the bottleneck instantly"
+      ],
+      resources:[
+        res("Amazon CloudWatch User Guide","https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html","doc"),
+        res("AWS X-Ray Developer Guide","https://docs.aws.amazon.com/xray/latest/devguide/aws-xray.html","doc"),
+        res("CloudWatch Logs Insights query syntax reference","https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CWL_QuerySyntax.html","doc"),
+        res("Google SRE book — Monitoring Distributed Systems chapter (free)","https://sre.google/sre-book/monitoring-distributed-systems/","doc")
+      ],
+      conceptQ:"You have both a log line and a custom metric recording each failed payment. They diverge: logs show 50 failures, metric shows 48. What are the three most likely causes of the discrepancy?",
+      build:"<b>Project:</b> Build the AgriChain CloudWatch observability stack.",
+      buildItems:[
+        "CloudWatch Dashboard: ALB RequestCount and HTTPCode_Target_5XX_Count, ECS CPUUtilization and MemoryUtilization, RDS DatabaseConnections and FreeStorageSpace, SQS DLQ ApproximateNumberOfMessagesVisible",
+        "Custom metric from Lambda: put_metric_data for HARVEST_PROCESSED_COUNT and HARVEST_FAILED_COUNT after each batch",
+        "Composite alarm: CRITICAL when (ALB 5xx rate > 1% for 5min) AND (ECS task count < 1) — SNS topic sends email + triggers SNS-to-Slack Lambda",
+        "Enable X-Ray on EKS pods via AWS Distro for OpenTelemetry (ADOT) sidecar — traces visible in X-Ray service map"
+      ],
+      deliverables:[
+        "CloudWatch dashboard screenshot saved to docs/screenshots/cloudwatch-dashboard.png",
+        "X-Ray service map showing ALB, AgriChain API, RDS, and Redis segments",
+        "Composite alarm fires when you stop all ECS tasks and waits correctly for the 5-minute evaluation period"
+      ],
+      checkpoint:"Use CloudWatch Logs Insights with the query: fields @timestamp, @message | filter @message like /ERROR/ | sort @timestamp desc | limit 20 — against the AgriChain log group"
+    },
+    {
+      label:"Day 3",
+      title:"AWS Security: GuardDuty, Security Hub and WAF",
+      learn:"AWS-native defense-in-depth: GuardDuty detects threats, Security Hub scores your posture, WAF blocks application-layer attacks at the edge.",
+      learnItems:[
+        "GuardDuty analyzes VPC flow logs, CloudTrail events, and DNS logs using ML to detect threats: credential exfiltration, crypto mining, unusual API calls",
+        "Security Hub aggregates findings from GuardDuty, Inspector, and Macie and scores them against the AWS Foundational Security Best Practices (FSBP) standard",
+        "WAF Core Rule Set (CRS): AWSManagedRulesCommonRuleSet blocks OWASP Top 10 patterns. Rate limiting protects against brute force and DDoS",
+        "WAF does NOT replace application-level input validation: WAF is an additional layer, not a substitute for parameterized queries and output encoding"
+      ],
+      resources:[
+        res("Amazon GuardDuty User Guide","https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html","doc"),
+        res("AWS Security Hub User Guide","https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html","doc"),
+        res("AWS WAF Developer Guide","https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html","doc"),
+        res("OWASP Top 10 — 2021 edition","https://owasp.org/www-project-top-ten/","doc")
+      ],
+      conceptQ:"WAF blocks a SQL injection pattern in a request to POST /harvests. Does that mean your application is safe from SQL injection? What must the application still do?",
+      build:"<b>Project:</b> Enable GuardDuty, Security Hub, and WAF for AgriChain via Terraform.",
+      buildItems:[
+        "Enable GuardDuty in the project region and Security Hub with the AWS FSBP standard enabled — both via Terraform aws_guardduty_detector and aws_securityhub_account",
+        "WAF WebACL: attach to ALB, add AWSManagedRulesCommonRuleSet, AWSManagedRulesSQLiRuleSet, and RateBasedRule (1000 req per 5 min per IP)",
+        "EventBridge rule: GuardDuty finding with severity >= 7 (HIGH) triggers SNS to send email alert within 5 minutes",
+        "Audit current Security Hub findings and remediate: ensure CloudTrail is enabled with multi-region, S3 access logging is on, root account has MFA"
+      ],
+      deliverables:[
+        "GuardDuty enabled with zero HIGH or CRITICAL active findings",
+        "Security Hub FSBP score above 80%",
+        "WAF attached to ALB — curl with User-Agent: sqlmap returns HTTP 403"
+      ],
+      checkpoint:"Disable encryption on one S3 bucket manually in the console. How long does it take for Security Hub to flag it as NON_COMPLIANT? What is the specific finding title?"
+    },
+    {
+      label:"Day 4-5",
+      title:"Incident Runbooks and AWS Cost Optimization",
+      learn:"Production readiness is not just uptime — it is knowing exactly what to do when things break and controlling the cost of keeping them running.",
+      learnItems:[
+        "Runbook anatomy: trigger (which alarm fires), severity classification, immediate actions (first 5 minutes), diagnosis steps, remediation options, escalation path, postmortem template",
+        "AWS Cost Explorer: tag-based cost allocation requires consistent tagging — this is why the Project, Environment, ManagedBy tags from Week 4 matter",
+        "AWS Budgets: set monthly budget with alert at 80% (warning) and 100% (critical) — prevents surprise bills from runaway resources",
+        "Compute Optimizer: analyzes CloudWatch CPU and memory metrics and recommends right-sized instance types — typical savings of 20-30% on compute"
+      ],
+      resources:[
+        res("AWS Cost Management User Guide","https://docs.aws.amazon.com/cost-management/latest/userguide/what-is-costmanagement.html","doc"),
+        res("AWS Trusted Advisor documentation","https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html","doc"),
+        res("Google SRE book — Postmortem Culture chapter (free)","https://sre.google/sre-book/postmortem-culture/","doc"),
+        res("AWS Compute Optimizer documentation","https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is-compute-optimizer.html","doc")
+      ],
+      conceptQ:"Write a one-sentence definition distinguishing: <b>incident</b> (service degraded now), <b>problem</b> (root cause not yet resolved), and <b>postmortem</b> (learning document after resolution).",
+      build:"<b>Project:</b> Write AgriChain incident runbooks and configure FinOps budget alerts.",
+      buildItems:[
+        "docs/runbooks/ecs-task-failure.md: trigger alarm, check ECS console for stopped task reason, check CloudWatch logs for OOM or application error, remediation steps, escalation",
+        "docs/runbooks/database-failover.md: Aurora failover procedure, expected downtime window, application reconnection verification steps, post-failover health checks",
+        "docs/runbooks/high-api-latency.md: X-Ray trace analysis steps, CloudWatch Logs Insights query for slow requests, RDS slow query log check, ElastiCache hit rate check",
+        "AWS Budget via Terraform: 50 USD monthly limit with SNS alerts at 80% and 100% sent to email"
+      ],
+      deliverables:["3 runbooks committed to docs/runbooks/ with complete diagnosis steps","AWS Budget alert confirmed working via test notification"],
+      checkpoint:"Stop all ECS tasks simultaneously. Which CloudWatch alarm triggers first? Does it trigger within the evaluation period defined in the ecs-task-failure runbook?"
+    }
+  ]
+},
+{
+  title:"Week 12 — Analytics Dashboard, Portfolio Polish and Interview Prep",
+  meta:"Phase 4 · ~20 hrs · Skills: QuickSight, architecture documentation, STAR framework",
+  outcome:"<b>End state:</b> Complete AgriChain platform with QuickSight dashboard, polished GitHub README with architecture diagrams, ADRs, and 5 rehearsed interview stories.",
+  capstone:"Finalize AgriChain — dashboard, README, architecture diagrams, and interview stories",
+  days:[
+    {
+      label:"Day 1-2",
+      title:"Amazon QuickSight Business Analytics Dashboard",
+      learn:"QuickSight is the AWS-native BI tool that connects directly to Athena, S3, and Redshift. Understand SPICE caching and row-level security.",
+      learnItems:[
+        "SPICE (Super-fast Parallel In-memory Calculation Engine): pre-loads data into QuickSight memory for fast dashboard rendering — 10GB free per user",
+        "SPICE vs direct query: SPICE for dashboards with many concurrent viewers, direct query for real-time data that cannot be stale",
+        "Row-level security (RLS): attach a dataset with user-to-value mappings to restrict which rows each user sees at query time",
+        "Scheduled SPICE refresh: define a refresh schedule to pull latest data from Athena after the daily dbt run completes"
+      ],
+      resources:[
+        res("Amazon QuickSight User Guide","https://docs.aws.amazon.com/quicksight/latest/user/welcome.html","doc"),
+        res("Amazon Redshift serverless getting started","https://docs.aws.amazon.com/redshift/latest/gsg/new-user-serverless.html","doc")
+      ],
+      conceptQ:"You have 50 business users checking revenue dashboards every 5 minutes. Why would SPICE + scheduled refresh outperform direct Athena queries in both cost and response time?",
+      build:"<b>Project:</b> Build the AgriChain analytics dashboard in QuickSight.",
+      buildItems:[
+        "QuickSight dataset: Athena data source pointing to the fct_harvest_revenue dbt mart in the Gold zone",
+        "Dashboard visuals: Revenue by Farm (horizontal bar, sorted descending), Revenue over Time (line chart by week), Quality Grade Distribution (donut chart), Payment Cycle Duration (histogram)",
+        "Row-level security: create a permissions dataset mapping user email to farm_id — FARM_OWNER users see only their own farm's revenue",
+        "Schedule SPICE refresh daily at 7am Bangkok time (UTC+7) — 1 hour after the nightly dbt run is expected to complete"
+      ],
+      deliverables:["QuickSight dashboard screenshot in docs/screenshots/quicksight-dashboard.png","RLS verified — a FARM_OWNER user cannot see revenue rows from a different farm_id"],
+      checkpoint:"Log into QuickSight as a FARM_OWNER user. Run the SQL behind the dataset filtered by their user — does it return zero rows for other farms?"
+    },
+    {
+      label:"Day 3-4",
+      title:"Portfolio Polish — README, Mermaid Diagrams and Architecture Decision Records",
+      learn:"A portfolio that cannot be understood in 90 seconds fails at its primary purpose. Every component needs a README that passes the 2-minute test.",
+      learnItems:[
+        "Architecture diagram essentials: show every AWS service, label data flows with the technology or protocol, draw security boundaries explicitly",
+        "README structure that works: one-sentence tagline, architecture diagram above the fold, quick start (make up), AWS services map, cost estimate",
+        "Architecture Decision Record (ADR): captures the context, options considered, decision made, and consequences — reviewers understand the why not just the what",
+        "STAR framework for technical interviews: Situation sets the context, Task defines your role, Action is the technical detail, Result quantifies the outcome — always include the trade-off considered"
+      ],
+      resources:[
+        res("Mermaid.js — diagrams as code in Markdown","https://mermaid.js.org/","tutorial"),
+        res("Architecture Decision Records — examples and templates","https://adr.github.io/","doc"),
+        res("Cognitect — original ADR blog post (Nygard 2011)","https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions","doc")
+      ],
+      conceptQ:"An interviewer asks: 'Why did you choose EKS over ECS for AgriChain?' Write a 3-sentence answer that references your specific project constraints and the trade-off you accepted.",
+      build:"<b>Project:</b> Complete the AgriChain documentation suite.",
+      buildItems:[
+        "README.md: one-line description, Mermaid architecture diagram (VPC boundary, EKS, RDS, S3 lakehouse, EventBridge, Glue, QuickSight with labeled arrows), AWS services table, make up quick start, monthly cost estimate for dev environment",
+        "docs/architecture/decisions/001-eks-vs-ecs.md: ADR with context (team size, long-term K8s portability), decision (EKS), and consequences (higher operational complexity in W4-W7)",
+        "docs/architecture/decisions/002-aurora-vs-rds-postgres.md: ADR with context (failover SLA requirement), decision (Aurora), and consequences (higher cost, cluster endpoint management)",
+        "Verify README renders correctly on GitHub: Mermaid diagram, code blocks, and table all display properly"
+      ],
+      deliverables:["Architecture diagram renders in README on GitHub","2 ADRs committed with context, decision, and consequences sections","README passes the 2-minute comprehension test"],
+      checkpoint:"Open the README on GitHub on a mobile device. Is the architecture diagram legible? Does the quick start section fit on one screen?"
+    },
+    {
+      label:"Day 5",
+      title:"Interview Preparation — STAR Stories and Trade-Off Discussions",
+      learn:"Senior engineering interviews evaluate trade-off reasoning, incident experience, and system design judgment — not memorization of service names.",
+      learnItems:[
+        "STAR + trade-off: every technical answer needs the trade-off you considered and rejected — this is what separates senior from mid-level",
+        "Production incident story structure: what was the symptom, how long until detection, what was the blast radius, how was it mitigated, what changed after",
+        "Data engineering interview patterns: late-arriving data handling, idempotent pipeline design, data quality enforcement, cost per TB processed",
+        "Cost optimization as a narrative: state the baseline cost, describe what you changed, quantify the result — interviewers want numbers"
+      ],
+      resources:[
+        res("AWS Well-Architected Framework — free reference","https://aws.amazon.com/architecture/well-architected/","doc"),
+        res("AWS Ramp-Up Guides — free learning paths by role","https://aws.amazon.com/training/ramp-up-guides/","doc")
+      ],
+      conceptQ:"What is the most expensive architectural decision you made during the AgriChain build in terms of monthly AWS cost? What would you change knowing the actual bill?",
+      build:"<b>Project:</b> Write and rehearse 5 STAR interview stories from AgriChain.",
+      buildItems:[
+        "Story 1 — Architecture trade-off: why EKS over ECS, what you gained (K8s ecosystem, IRSA, Helm), what you gave up (simpler ops), what you would change for a 2-person team",
+        "Story 2 — Production incident: a real or simulated failure you diagnosed using CloudWatch Logs Insights and X-Ray, root cause, fix, and preventive change",
+        "Story 3 — Security decision: why you implemented GuardDuty + WAF + KMS, which threat each layer addresses, and what a breach scenario looks like with and without each layer",
+        "Story 4 — Data engineering: the medallion lakehouse design, a specific data quality failure your GX checkpoint caught before it reached the dashboard, and the cost impact of Parquet vs JSON",
+        "Story 5 — Cost optimization: a specific AWS resource you identified via Cost Explorer as over-provisioned, what you changed, and the monthly savings"
+      ],
+      deliverables:["docs/interview/star-stories.md with all 5 stories written out in full","README updated with a Certifications and Next Steps section"],
+      checkpoint:"Record a 2-minute voice or video walkthrough of the AgriChain architecture diagram. Can a viewer who has never seen the project describe what it does and how the data flows from API to QuickSight?"
+    }
+  ]
+}
+];
+
+var MINI_PROJECTS=[
+  {title:"M1 — AWS Infra Modules Library",week:"W4-W5",track:"DevOps",color:"blue",
+    desc:"Reusable Terraform modules for VPC, EKS, RDS, ElastiCache, and ECR. Each module has typed variables, documented outputs, module README, and Checkov CI validation.",
+    chips:["Terraform","AWS","Checkov","CI"]},
+  {title:"M2 — Docker Image Bakery",week:"W2-W3",track:"DevOps",color:"blue",
+    desc:"Production-grade Dockerfiles for Python 3.12, Node 22, and Nginx. Multi-stage builds, non-root users, Trivy scan showing zero CRITICAL CVEs.",
+    chips:["Docker","Trivy","GitHub Actions"]},
+  {title:"M3 — K8s Troubleshooting Lab",week:"W7",track:"DevOps",color:"blue",
+    desc:"10 broken Kubernetes scenarios: CrashLoopBackOff, Pending, OOMKilled, selector mismatch, RBAC denied, wrong imagePullPolicy. Each with diagnosis steps and fix.",
+    chips:["Kubernetes","RBAC","Debugging"]},
+  {title:"M4 — Log Analyzer CLI",week:"W1-W2",track:"DevOps",color:"blue",
+    desc:"Python CLI that parses Nginx and ALB access log files: top-N source IPs, error rate by hour, slowest requests by response time. Outputs JSON or formatted table.",
+    chips:["Python","Click","Logs"]},
+  {title:"M5 — Self-Healing Infrastructure",week:"W11",track:"DevOps",color:"blue",
+    desc:"CloudWatch alarm fires EventBridge rule triggers Lambda that auto-remediates: restarts unhealthy ECS tasks, cleans unattached EBS volumes, alerts via SNS.",
+    chips:["Lambda","EventBridge","CloudWatch"]},
+  {title:"M6 — Data Quality Suite",week:"W9",track:"Data",color:"green",
+    desc:"Great Expectations checkpoint library for the AgriChain harvest dataset: 15 expectations covering nulls, data types, value ranges, and referential integrity with Glue.",
+    chips:["Great Expectations","Python","dbt"]},
+  {title:"M7 — AWS Cost Guardian",week:"W11-W12",track:"Data",color:"green",
+    desc:"Python boto3 script that scans for cost leaks: unattached EBS volumes, unused Elastic IPs, old snapshots older than 30 days, unencrypted RDS instances. Outputs JSON report.",
+    chips:["Python","boto3","FinOps"]},
+  {title:"M8 — SSL Certificate Monitor",week:"W2",track:"DevOps",color:"blue",
+    desc:"Script monitors TLS certificates for a list of domains using Python ssl library. Sends SNS alert when expiry is under 30 days. Exposes Prometheus /metrics endpoint.",
+    chips:["Python","TLS","Prometheus"]}
+];
+
+function buildWeeks(){
+  var tabContainer=document.getElementById('main-week-tabs');
+  var contentContainer=document.getElementById('main-week-content');
+  WEEKS.forEach(function(week,wi){
+    var tab=document.createElement('button');
+    tab.className='wtab'+(wi===0?' active':'');
+    tab.textContent='W'+(wi+1);
+    tab.title=week.title;
+    tab.setAttribute('onclick','switchWeek('+wi+')');
+    tabContainer.appendChild(tab);
+    var panel=document.createElement('div');
+    panel.className='week-panel'+(wi===0?' active':'');
+    panel.id='week-panel-'+wi;
+    var html='<div class="week-card">';
+    html+='<div class="week-header">';
+    html+='<h3>'+week.title+'</h3>';
+    html+='<div class="week-meta">'+week.meta+'</div>';
+    html+='<div class="week-outcome">'+week.outcome+'</div>';
+    html+='<div class="capstone-badge">&#127806; Capstone: '+week.capstone+'</div>';
+    html+='</div>';
+    html+='<div class="day-tabs" id="day-tabs-'+wi+'">';
+    week.days.forEach(function(day,di){
+      html+='<button class="dtab'+(di===0?' active':'')+'" onclick="switchDay('+wi+','+di+')">'+day.label+'</button>';
+    });
+    html+='</div>';
+    week.days.forEach(function(day,di){
+      html+='<div class="day-panel'+(di===0?' active':'')+'" id="day-'+wi+'-'+di+'">';
+      html+='<div class="block learn-block"><h4>&#128218; Learn &#8212; '+day.title+'</h4>';
+      html+='<p style="margin-bottom:8px">'+day.learn+'</p>';
+      if(day.learnItems){html+='<ul>'+day.learnItems.map(function(i){return'<li>'+i+'</li>';}).join('')+'</ul>';}
+      html+='<div class="res-row">'+day.resources.join('')+'</div></div>';
+      if(day.conceptQ){html+='<div class="concept-q"><b>Concept check:</b> '+day.conceptQ+'</div>';}
+      html+='<div class="block build-block"><h4>&#128296; Build &#8212; AgriChain Increment</h4>';
+      html+='<p style="margin-bottom:8px">'+day.build+'</p>';
+      if(day.buildItems){html+='<ul>'+day.buildItems.map(function(i){return'<li>'+i+'</li>';}).join('')+'</ul>';}
+      html+='</div>';
+      if(day.deliverables){
+        html+='<div class="block deliverable-block"><h4>&#9989; Deliverables</h4>';
+        html+='<ul>'+day.deliverables.map(function(i){return'<li>'+i+'</li>';}).join('')+'</ul></div>';
+      }
+      if(day.checkpoint){html+='<div class="checkpoint"><b>Checkpoint:</b> '+day.checkpoint+'</div>';}
+      html+='</div>';
+    });
+    html+='</div>';
+    panel.innerHTML=html;
+    contentContainer.appendChild(panel);
+  });
+}
+
+function switchWeek(wi){
+  document.querySelectorAll('.wtab').forEach(function(t,i){t.classList.toggle('active',i===wi);});
+  document.querySelectorAll('.week-panel').forEach(function(p,i){p.classList.toggle('active',i===wi);});
+}
+
+function switchDay(wi,di){
+  document.querySelectorAll('#day-tabs-'+wi+' .dtab').forEach(function(t,i){t.classList.toggle('active',i===di);});
+  document.querySelectorAll('[id^="day-'+wi+'-"]').forEach(function(p,i){p.classList.toggle('active',i===di);});
+}
+
+function buildMiniProjects(){
+  var grid=document.getElementById('mini-project-grid');
+  MINI_PROJECTS.forEach(function(mp){
+    var div=document.createElement('div');
+    div.className='mini-card';
+    var colorVar=mp.color==='green'?'var(--green)':'var(--blue)';
+    div.innerHTML='<h3>'+mp.title+'</h3>'
+      +'<div style="font-size:10px;font-weight:700;color:'+colorVar+';letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px">'
+      +mp.track+' &#183; '+mp.week+'</div>'
+      +'<p>'+mp.desc+'</p>'
+      +'<div class="chips">'+mp.chips.map(function(c){return'<span class="chip">'+c+'</span>';}).join('')+'</div>';
+    grid.appendChild(div);
+  });
+}
+
+buildWeeks();
+buildMiniProjects();
+</script>
+</body>
+</html>

@@ -1,0 +1,894 @@
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="hljs-light">
+<style id="hljs-dark-style"></style>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.root{padding:1rem 0;font-family:var(--font-sans)}
+.phase-tabs{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.ptab{font-size:12px;font-weight:500;padding:6px 14px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;transition:all .15s;white-space:nowrap}
+.ptab.active{color:#fff;border-color:transparent}
+.ptab[data-phase="p1"].active{background:#378ADD}
+.ptab[data-phase="p2"].active{background:#1D9E75}
+.ptab[data-phase="p3"].active{background:#BA7517}
+.phase-panel{display:none}
+.phase-panel.active{display:block}
+.feat-list{display:flex;flex-direction:column;gap:8px}
+.feat-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;transition:border-color .15s}
+.feat-card:hover{border-color:var(--color-border-secondary)}
+.feat-header{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;user-select:none}
+.feat-num{font-size:11px;font-weight:500;min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.feat-title{font-size:13px;font-weight:500;color:var(--color-text-primary);flex:1}
+.feat-chips{display:flex;gap:4px;flex-wrap:wrap}
+.chip{font-size:10px;padding:2px 7px;border-radius:8px;border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary);background:var(--color-background-secondary)}
+.chev{font-size:11px;color:var(--color-text-tertiary);transition:transform .2s;flex-shrink:0}
+.chev.open{transform:rotate(90deg)}
+.feat-body{display:none;border-top:0.5px solid var(--color-border-tertiary)}
+.feat-body.open{display:block}
+.concept-box{padding:12px 14px;background:var(--color-background-secondary)}
+.concept-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-tertiary);margin-bottom:5px}
+.concept-text{font-size:13px;color:var(--color-text-secondary);line-height:1.65}
+.code-box{padding:12px 14px;background:var(--color-background-primary)}
+.code-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--color-text-tertiary);margin-bottom:8px}
+.code-wrap{border-radius:var(--border-radius-md);overflow:hidden;border:0.5px solid var(--color-border-tertiary)}
+.code-wrap pre{margin:0;padding:12px 14px;overflow-x:auto;font-size:12px;line-height:1.6;background:var(--color-background-secondary)!important}
+.code-wrap code{font-family:var(--font-mono)!important;font-size:12px!important;background:transparent!important}
+.p1-num{background:#E6F1FB;color:#0C447C}
+.p2-num{background:#E1F5EE;color:#085041}
+.p3-num{background:#FAEEDA;color:#633806}
+</style>
+
+<div class="root">
+<div class="phase-tabs">
+  <button class="ptab active" data-phase="p1" onclick="showPhase('p1',this)">📋 Month 1–2 · Foundation (8 features)</button>
+  <button class="ptab" data-phase="p2" onclick="showPhase('p2',this)">📊 Month 3–4 · Data Eng (7 features)</button>
+  <button class="ptab" data-phase="p3" onclick="showPhase('p3',this)">🚀 Month 5–6 · Intelligence (6 features)</button>
+</div>
+
+<!-- PHASE 1 -->
+<div id="p1" class="phase-panel active"><div class="feat-list" id="p1-list"></div></div>
+<!-- PHASE 2 -->
+<div id="p2" class="phase-panel"><div class="feat-list" id="p2-list"></div></div>
+<!-- PHASE 3 -->
+<div id="p3" class="phase-panel"><div class="feat-list" id="p3-list"></div></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+const DATA = {
+p1:[
+{title:"Farm & Contractor Registration",chips:["FastAPI","SQLAlchemy","PostgreSQL"],
+concept:"Each user is stored with a role (FARM_OWNER or CONTRACTOR) and linked to their farm entity. FastAPI's dependency injection pattern cleanly separates auth verification from business logic — you inject the current user into any route that needs it. SQLAlchemy ORM maps Python classes to Postgres tables.",
+code:`# models/user.py
+import enum
+from sqlalchemy import Column, String, Enum, ForeignKey
+from app.database import Base
+
+class UserRole(str, enum.Enum):
+    FARM_OWNER = "farm_owner"
+    CONTRACTOR  = "contractor"
+    ADMIN       = "admin"
+
+class User(Base):
+    __tablename__ = "users"
+    id       = Column(String, primary_key=True)  # Firebase UID
+    email    = Column(String, unique=True, nullable=False)
+    role     = Column(Enum(UserRole), nullable=False)
+    farm_id  = Column(String, ForeignKey("farms.id"), nullable=True)
+
+class Farm(Base):
+    __tablename__ = "farms"
+    id              = Column(String, primary_key=True)
+    name            = Column(String(255), nullable=False)
+    province        = Column(String(100))  # จังหวัด
+    total_area_rai  = Column(Float)
+    owner_id        = Column(String, ForeignKey("users.id"))`},
+
+{title:"Role-Based Access Control (RBAC)",chips:["Firebase Auth","JWT","FastAPI Depends"],
+concept:"Firebase Auth issues a JWT token to the frontend after login. Every FastAPI request verifies that token server-side using the Firebase Admin SDK. The require_role() dependency factory wraps any route — pass in allowed roles and FastAPI auto-returns 403 if the caller's role is not in the list.",
+code:`# deps/auth.py
+from fastapi import Depends, HTTPException
+from fastapi.security import HTTPBearer
+from firebase_admin import auth, credentials
+import firebase_admin
+
+firebase_admin.initialize_app(credentials.ApplicationDefault())
+security = HTTPBearer()
+
+async def get_current_user(token=Depends(security), db=Depends(get_db)):
+    try:
+        decoded = auth.verify_id_token(token.credentials)
+        user = db.query(User).filter_by(id=decoded["uid"]).first()
+        if not user:
+            raise HTTPException(404, "User not found")
+        return user
+    except Exception:
+        raise HTTPException(401, "Invalid or expired token")
+
+def require_role(*roles: UserRole):
+    def checker(u=Depends(get_current_user)):
+        if u.role not in roles:
+            raise HTTPException(403, "Insufficient permissions")
+        return u
+    return checker
+
+# Usage in any router:
+@router.get("/contractors")
+async def list_contractors(
+    _=Depends(require_role(UserRole.FARM_OWNER, UserRole.ADMIN))
+):
+    ...`},
+
+{title:"Contract CRUD + State Machine",chips:["FastAPI","Pydantic","State Pattern"],
+concept:"A Contract moves through a defined lifecycle: DRAFT → SENT → SIGNED → ACTIVE → COMPLETED. The state machine pattern enforces valid transitions at the service layer, not the API layer. Pydantic v2 models validate incoming request bodies and serialize outgoing responses automatically.",
+code:`# models/contract.py
+class ContractStatus(str, enum.Enum):
+    DRAFT="draft"; SENT="sent"; SIGNED="signed"
+    ACTIVE="active"; COMPLETED="completed"; CANCELLED="cancelled"
+
+TRANSITIONS = {
+    ContractStatus.DRAFT:     [ContractStatus.SENT, ContractStatus.CANCELLED],
+    ContractStatus.SENT:      [ContractStatus.SIGNED, ContractStatus.CANCELLED],
+    ContractStatus.SIGNED:    [ContractStatus.ACTIVE],
+    ContractStatus.ACTIVE:    [ContractStatus.COMPLETED],
+}
+
+def transition(contract, new_status: ContractStatus):
+    allowed = TRANSITIONS.get(contract.status, [])
+    if new_status not in allowed:
+        raise ValueError(f"Invalid: {contract.status} → {new_status}")
+    contract.status = new_status
+    return contract
+
+# schemas/contract.py (Pydantic v2)
+class ContractCreate(BaseModel):
+    contractor_id: UUID
+    crop_type:     str
+    area_rai:      float = Field(gt=0)
+    price_per_kg:  Decimal = Field(gt=0, decimal_places=2)
+    season_start:  date
+    season_end:    date
+
+    @model_validator(mode="after")
+    def end_after_start(self):
+        if self.season_end <= self.season_start:
+            raise ValueError("season_end must be after season_start")
+        return self`},
+
+{title:"FastAPI App + Cloud Run Deployment",chips:["Docker","Cloud Run","uvicorn"],
+concept:"Cloud Run runs stateless containers that scale to zero. Your FastAPI app listens on port 8080 (Cloud Run's expected port). The Dockerfile uses a slim Python base image to keep the container small and cold-start time low. Health check endpoint is required for Cloud Run's load balancer.",
+code:`# Dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+EXPOSE 8080
+CMD ["uvicorn","app.main:app","--host","0.0.0.0","--port","8080"]
+
+# app/main.py
+from fastapi import FastAPI
+from contextlib import asynccontextmanager
+from app.routers import contracts, users, harvests
+from app.database import engine, Base
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    Base.metadata.create_all(bind=engine)  # run migrations
+    yield
+
+app = FastAPI(title="AgriChain API", version="1.0.0", lifespan=lifespan)
+app.include_router(contracts.router, prefix="/api/v1/contracts")
+app.include_router(harvests.router,  prefix="/api/v1/harvests")
+
+@app.get("/health")   # Required by Cloud Run
+def health(): return {"status":"ok"}`},
+
+{title:"PostgreSQL Schema + Alembic Migrations",chips:["PostgreSQL","Alembic","Cloud SQL"],
+concept:"Alembic is SQLAlchemy's database migration tool — it tracks schema changes in versioned Python files, letting you upgrade or rollback safely. Think of it like git for your database schema. Every new column or table gets its own migration file, which Cloud Build runs automatically before deploying the new API version.",
+code:`# Run once to init:  alembic init alembic
+# Create migration:   alembic revision --autogenerate -m "add harvest table"
+
+# alembic/versions/002_add_harvest.py
+import sqlalchemy as sa
+from alembic import op
+
+def upgrade():
+    op.create_table("harvests",
+        sa.Column("id",          sa.UUID(),    primary_key=True),
+        sa.Column("contract_id", sa.UUID(),    sa.ForeignKey("contracts.id")),
+        sa.Column("weight_kg",   sa.Float(),   nullable=False),
+        sa.Column("quality",     sa.String(1)),        # A / B / C
+        sa.Column("harvest_date",sa.Date(),    nullable=False),
+        sa.Column("photo_gcs",   sa.String()), # gs://bucket/path
+        sa.Column("recorded_at", sa.DateTime(),server_default=sa.func.now()),
+    )
+    op.create_index("ix_harvest_contract", "harvests", ["contract_id"])
+    op.create_index("ix_harvest_date",     "harvests", ["harvest_date"])
+
+def downgrade():
+    op.drop_table("harvests")`},
+
+{title:"React + Next.js 14 Frontend",chips:["Next.js","TypeScript","App Router"],
+concept:"Next.js 14 App Router uses Server Components by default — data fetching happens on the server, reducing client bundle size. Client Components (marked 'use client') handle interactivity. This pattern keeps the farm owner dashboard fast even on slow Thai rural mobile networks.",
+code:`// app/contracts/page.tsx  (Server Component — no 'use client')
+import { cookies } from "next/headers"
+import ContractList from "@/components/ContractList"
+
+async function getContracts() {
+  const token = cookies().get("token")?.value
+  const res = await fetch(\`\${process.env.API_URL}/api/v1/contracts\`, {
+    headers: { Authorization: \`Bearer \${token}\` },
+    next: { revalidate: 60 },  // ISR: revalidate every 60s
+  })
+  return res.json()
+}
+
+export default async function ContractsPage() {
+  const contracts = await getContracts()
+  return <ContractList initialData={contracts} />
+}
+
+// components/ContractList.tsx  (Client Component)
+"use client"
+import { useState } from "react"
+
+export default function ContractList({ initialData }) {
+  const [filter, setFilter] = useState("all")
+  const filtered = initialData.filter(
+    c => filter === "all" || c.status === filter
+  )
+  return (
+    <div>
+      <select onChange={e => setFilter(e.target.value)}>
+        <option value="all">ทั้งหมด</option>
+        <option value="active">กำลังดำเนินการ</option>
+      </select>
+      {filtered.map(c => <ContractCard key={c.id} contract={c} />)}
+    </div>
+  )
+}`},
+
+{title:"Terraform IaC for GCP Resources",chips:["Terraform","Cloud Run","Cloud SQL"],
+concept:"Terraform describes your GCP infrastructure as code. One terraform apply command creates Cloud Run, Cloud SQL, Secret Manager entries, and IAM bindings together. Using terraform workspaces lets you maintain dev/staging/prod environments from the same code with different .tfvars files — this is your AWS DevOps skill transferred directly.",
+code:`# main.tf
+resource "google_cloud_run_v2_service" "api" {
+  name     = "agrichain-api-\${var.env}"
+  location = "asia-southeast1"
+
+  template {
+    containers {
+      image = "\${var.region}-docker.pkg.dev/\${var.project}/agrichain/api:\${var.image_tag}"
+      env {
+        name = "DATABASE_URL"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.db_url.secret_id
+            version = "latest"
+          }
+        }
+      }
+      resources { limits = { cpu = "1", memory = "512Mi" } }
+    }
+    scaling { min_instance_count = 0; max_instance_count = 10 }
+  }
+}
+
+resource "google_sql_database_instance" "pg" {
+  name             = "agrichain-\${var.env}"
+  database_version = "POSTGRES_15"
+  region           = "asia-southeast1"
+  settings {
+    tier = var.env == "prod" ? "db-custom-2-4096" : "db-f1-micro"
+    backup_configuration { enabled = true }
+  }
+  deletion_protection = var.env == "prod"
+}`},
+
+{title:"CI/CD with Cloud Build + GitHub Actions",chips:["Cloud Build","GitHub Actions","Docker"],
+concept:"The pipeline has three gates: lint → test → build → deploy. Cloud Build handles the GCP-side build and push to Artifact Registry. GitHub Actions triggers on pull requests to run tests before merging. Alembic migration runs as a Cloud Build step before Cloud Run is updated, preventing schema/code version mismatch.",
+code:`# cloudbuild.yaml
+steps:
+  - name: python:3.11
+    entrypoint: bash
+    args: ["-c", "pip install -r requirements.txt && pytest tests/ -v --cov=app"]
+
+  - name: gcr.io/cloud-builders/docker
+    args: [build, -t,
+      "asia-southeast1-docker.pkg.dev/$PROJECT_ID/agrichain/api:$COMMIT_SHA", .]
+
+  - name: gcr.io/cloud-builders/docker
+    args: [push,
+      "asia-southeast1-docker.pkg.dev/$PROJECT_ID/agrichain/api:$COMMIT_SHA"]
+
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+    entrypoint: bash
+    args: ["-c", |
+      # Run DB migrations before deploying new image
+      gcloud run jobs execute migrate-job --region=asia-southeast1 --wait
+      gcloud run deploy agrichain-api \\
+        --image asia-southeast1-docker.pkg.dev/$PROJECT_ID/agrichain/api:$COMMIT_SHA \\
+        --region asia-southeast1 --quiet]
+
+options:
+  logging: CLOUD_LOGGING_ONLY`},
+],
+
+p2:[
+{title:"Pub/Sub Event Streaming",chips:["Pub/Sub","Event-Driven","Python SDK"],
+concept:"Instead of services calling each other directly (tight coupling), each service publishes events to a Pub/Sub topic. Other services subscribe and react asynchronously. When a harvest is logged via the API, it publishes to harvest-events — both the Dataflow pipeline and the notification service consume it independently without knowing about each other.",
+code:`# events/publisher.py
+from google.cloud import pubsub_v1
+import json, logging
+from datetime import datetime, timezone
+
+publisher = pubsub_v1.PublisherClient()
+
+def publish(topic: str, event_type: str, payload: dict) -> str:
+    topic_path = publisher.topic_path("your-project", topic)
+    message = {
+        "event_type": event_type,
+        "occurred_at": datetime.now(timezone.utc).isoformat(),
+        "payload": payload
+    }
+    future = publisher.publish(
+        topic_path,
+        json.dumps(message).encode("utf-8"),
+        event_type=event_type        # message attribute for filtering
+    )
+    msg_id = future.result()
+    logging.info(f"Published {event_type} → {msg_id}")
+    return msg_id
+
+# Usage inside the harvest service:
+def log_harvest(data: HarvestCreate, db: Session):
+    harvest = Harvest(**data.model_dump())
+    db.add(harvest); db.commit()
+
+    publish("harvest-events", "harvest.logged", {
+        "harvest_id":   str(harvest.id),
+        "contract_id":  str(harvest.contract_id),
+        "weight_kg":    harvest.weight_kg,
+        "quality":      harvest.quality,
+        "harvest_date": harvest.harvest_date.isoformat(),
+    })
+    return harvest`},
+
+{title:"Cloud Dataflow Streaming Pipeline",chips:["Apache Beam","Dataflow","BigQuery"],
+concept:"Apache Beam provides a unified API for both batch and streaming data. A PCollection is like a lazy list of records flowing through transforms (ParDo, GroupBy, Window). The same Python code runs locally for testing and on Dataflow workers at scale. The pipeline reads from Pub/Sub continuously and writes to BigQuery in micro-batches.",
+code:`# pipelines/harvest_stream.py
+import apache_beam as beam
+from apache_beam.options.pipeline_options import PipelineOptions, StandardOptions
+import json
+
+class ParseEvent(beam.DoFn):
+    def process(self, raw: bytes):
+        msg = json.loads(raw.decode("utf-8"))
+        p   = msg["payload"]
+        yield {
+            "harvest_id":   p["harvest_id"],
+            "contract_id":  p["contract_id"],
+            "weight_kg":    float(p["weight_kg"]),
+            "quality":      p["quality"],
+            "harvest_date": p["harvest_date"],
+            "ingested_at":  msg["occurred_at"],
+        }
+
+def run():
+    opts = PipelineOptions([
+        "--project=your-project",
+        "--runner=DataflowRunner",
+        "--region=asia-southeast1",
+        "--streaming",                        # continuous mode
+        "--temp_location=gs://agrichain-tmp/",
+    ])
+    opts.view_as(StandardOptions).streaming = True
+
+    with beam.Pipeline(options=opts) as p:
+        (p
+         | "Read"  >> beam.io.ReadFromPubSub(
+                topic="projects/your-project/topics/harvest-events")
+         | "Parse" >> beam.ParDo(ParseEvent())
+         | "Write" >> beam.io.WriteToBigQuery(
+                "your-project:agrichain.harvest_stream",
+                write_disposition=beam.io.BigQueryDisposition.WRITE_APPEND,
+                create_disposition=beam.io.BigQueryDisposition.CREATE_NEVER)
+        )`},
+
+{title:"BigQuery Star Schema (Data Warehouse)",chips:["BigQuery","SQL","Data Modeling"],
+concept:"A star schema separates measurable facts (harvest weight, payment amount) from descriptive dimensions (date, crop, farm). This makes analytics queries 10–100x faster than querying your normalized Postgres tables. The Thai Buddhist calendar year (พ.ศ.) is added to dim_date to support Thai reporting requirements.",
+code:`-- Fact table: one row per harvest event
+CREATE TABLE agrichain.fact_harvests (
+  harvest_id       STRING     NOT NULL,
+  contract_id      STRING     NOT NULL,
+  farm_id          STRING     NOT NULL,
+  contractor_id    STRING     NOT NULL,
+  date_id          INT64      NOT NULL,   -- FK → dim_date
+  crop_id          INT64      NOT NULL,   -- FK → dim_crop
+  weight_kg        FLOAT64,
+  quality_grade    STRING,                -- A / B / C
+  price_per_kg     FLOAT64,
+  total_payment    FLOAT64,               -- computed at load time
+  ingested_at      TIMESTAMP
+)
+PARTITION BY DATE(ingested_at)            -- auto-partition by date
+CLUSTER BY farm_id, crop_id;              -- faster farm-level queries
+
+-- Date dimension with Thai Buddhist year
+CREATE TABLE agrichain.dim_date AS
+SELECT
+  FORMAT_DATE('%Y%m%d', d)             AS date_id,
+  d                                    AS full_date,
+  EXTRACT(YEAR  FROM d)                AS year_ce,
+  EXTRACT(YEAR  FROM d) + 543          AS year_be,  -- พ.ศ.
+  EXTRACT(MONTH FROM d)                AS month,
+  FORMAT_DATE('%B', d)                 AS month_name,
+  EXTRACT(QUARTER FROM d)              AS quarter
+FROM UNNEST(GENERATE_DATE_ARRAY('2020-01-01','2030-12-31')) AS d;
+
+-- Example analytics query
+SELECT c.crop_name_th, SUM(f.total_payment) AS revenue,
+       AVG(f.weight_kg / 1000)              AS avg_ton_per_harvest
+FROM agrichain.fact_harvests f
+JOIN agrichain.dim_crop c USING (crop_id)
+WHERE d.year_be = 2568           -- Thai year 2568
+GROUP BY 1 ORDER BY 2 DESC;`},
+
+{title:"Airflow DAG — Nightly ETL",chips:["Cloud Composer","Airflow","DAG"],
+concept:"A DAG (Directed Acyclic Graph) defines tasks and their dependencies. Cloud Composer (managed Airflow on GCP) runs your DAGs on schedule. The ETL pattern here is ELT — Extract from Postgres to GCS as JSON, Load to BigQuery raw table, Transform inside BigQuery using SQL. This avoids heavy compute in the middle layer.",
+code:`# dags/etl_postgres_to_bq.py
+from airflow import DAG
+from airflow.providers.google.cloud.transfers.postgres_to_gcs import PostgresToGCSOperator
+from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
+from airflow.providers.google.cloud.operators.bigquery import BigQueryInsertJobOperator
+from pendulum import datetime
+
+with DAG(
+    dag_id="etl_agrichain_daily",
+    schedule="0 2 * * *",          # 2am daily (Bangkok = UTC+7)
+    start_date=datetime(2025,1,1, tz="Asia/Bangkok"),
+    catchup=False,
+    tags=["agrichain","etl"],
+) as dag:
+
+    extract = PostgresToGCSOperator(
+        task_id="extract_contracts",
+        postgres_conn_id="agrichain_postgres",
+        sql="SELECT * FROM contracts WHERE updated_at::date = '{{ ds }}'",
+        bucket="agrichain-datalake",
+        filename="raw/contracts/{{ ds }}/data.json",
+        export_format="json",
+    )
+
+    load = GCSToBigQueryOperator(
+        task_id="load_to_bq",
+        bucket="agrichain-datalake",
+        source_objects=["raw/contracts/{{ ds }}/data.json"],
+        destination_project_dataset_table="agrichain.contracts_raw",
+        source_format="NEWLINE_DELIMITED_JSON",
+        write_disposition="WRITE_APPEND",
+        autodetect=True,
+    )
+
+    transform = BigQueryInsertJobOperator(
+        task_id="transform_to_facts",
+        configuration={"query":{"query": """
+            INSERT INTO agrichain.fact_harvests
+            SELECT h.id, h.contract_id, c.farm_id, ...
+            FROM agrichain.harvests_raw h
+            JOIN agrichain.contracts_raw c USING(contract_id)
+            WHERE DATE(h.ingested_at) = '{{ ds }}'
+        """, "useLegacySql": False}},
+    )
+
+    extract >> load >> transform`},
+
+{title:"Harvest & Yield Tracking API",chips:["FastAPI","GCS","Time-series"],
+concept:"Contractors submit harvest records with weight, quality grade, and optionally a photo. Photos go directly to GCS (via a signed URL pattern — the client uploads directly to GCS, bypassing your API server, which keeps Cloud Run costs low). Yield-per-rai is computed on the fly from the contract's area_rai for the dashboard.",
+code:`# routers/harvests.py
+from google.cloud import storage
+
+storage_client = storage.Client()
+
+def generate_upload_url(filename: str) -> str:
+    """Signed URL so client uploads photo directly to GCS."""
+    bucket = storage_client.bucket("agrichain-photos")
+    blob   = bucket.blob(f"harvests/{filename}")
+    return blob.generate_signed_url(
+        version="v4", expiration=timedelta(minutes=15), method="PUT",
+        content_type="image/jpeg",
+    )
+
+@router.post("/harvests", response_model=HarvestResponse)
+async def log_harvest(
+    data: HarvestCreate,
+    db: Session = Depends(get_db),
+    user: User   = Depends(require_role(UserRole.CONTRACTOR)),
+):
+    contract = db.query(Contract).filter_by(
+        id=data.contract_id, contractor_id=user.id,
+        status=ContractStatus.ACTIVE
+    ).first()
+    if not contract:
+        raise HTTPException(404, "Active contract not found")
+
+    harvest = Harvest(**data.model_dump(), recorded_by=user.id)
+    harvest.yield_per_rai = harvest.weight_kg / contract.area_rai  # computed
+    db.add(harvest); db.commit(); db.refresh(harvest)
+
+    publish("harvest-events", "harvest.logged", harvest.to_dict())
+    upload_url = generate_upload_url(f"{harvest.id}.jpg")
+    return HarvestResponse(**harvest.__dict__, photo_upload_url=upload_url)`},
+
+{title:"Payment Calculation Engine",chips:["Service Layer","Decimal","Thai Tax"],
+concept:"Payment logic lives in a pure Python service class — no FastAPI, no SQLAlchemy. This makes it independently testable and reusable in both the API and the Airflow batch job. Python's Decimal type (not float) is critical for financial calculations to avoid floating-point rounding errors. Thai withholding tax (ภาษีหัก ณ ที่จ่าย) for agriculture is 3%.",
+code:`# services/payment.py
+from decimal import Decimal, ROUND_HALF_UP
+from dataclasses import dataclass
+
+GRADE_BONUS = {"A": Decimal("0.10"), "B": Decimal("0.05"), "C": Decimal("0.00")}
+WITHHOLDING_TAX = Decimal("0.03")   # Thai law: 3% for agricultural income
+
+@dataclass
+class PaymentBreakdown:
+    total_weight_kg: float
+    base_amount:     Decimal
+    quality_bonus:   Decimal
+    gross_amount:    Decimal
+    tax_deducted:    Decimal
+    net_amount:      Decimal  # amount actually paid to contractor
+
+class PaymentService:
+    def calculate(self, contract, harvests: list) -> PaymentBreakdown:
+        base = sum(
+            Decimal(str(h.weight_kg)) * contract.price_per_kg
+            for h in harvests
+        )
+        bonus = sum(
+            Decimal(str(h.weight_kg)) * contract.price_per_kg
+            * GRADE_BONUS[h.quality_grade]
+            for h in harvests
+        )
+        gross = (base + bonus).quantize(Decimal("0.01"), ROUND_HALF_UP)
+        tax   = (gross * WITHHOLDING_TAX).quantize(Decimal("0.01"), ROUND_HALF_UP)
+
+        return PaymentBreakdown(
+            total_weight_kg=sum(h.weight_kg for h in harvests),
+            base_amount=base, quality_bonus=bonus,
+            gross_amount=gross, tax_deducted=tax,
+            net_amount=gross - tax,
+        )`},
+
+{title:"Data Quality with Great Expectations",chips:["Great Expectations","Data Validation","Airflow"],
+concept:"Great Expectations (GX) defines rules (expectations) for your data and generates HTML reports when data fails those rules. Adding a GX validation step to your Airflow DAG ensures bad data (e.g., harvest weight = 0 or negative price) never reaches BigQuery. This is what separates junior from intermediate data engineers.",
+code:`# gx/suites/harvest_suite.py
+import great_expectations as gx
+
+context = gx.get_context()
+
+# Define expectations for the harvest dataset
+suite = context.add_expectation_suite("harvests.critical")
+
+# weight_kg must be positive
+suite.add_expectation(gx.expectations.ExpectColumnValuesToBeBetween(
+    column="weight_kg", min_value=0.1, max_value=50000
+))
+# quality must be A, B, or C
+suite.add_expectation(gx.expectations.ExpectColumnValuesToBeInSet(
+    column="quality_grade", value_set=["A","B","C"]
+))
+# no null contract_id
+suite.add_expectation(gx.expectations.ExpectColumnValuesToNotBeNull(
+    column="contract_id"
+))
+
+# In your Airflow DAG, add a validation task:
+from airflow.operators.python import PythonOperator
+
+def validate_harvests(**ctx):
+    ds = ctx["ds"]
+    batch = context.get_batch({"path": f"gs://agrichain-datalake/raw/harvests/{ds}/"})
+    result = context.run_validation_operator("action_list_operator", [batch])
+    if not result["success"]:
+        raise ValueError(f"Data quality FAILED on {ds}. Check GX report.")
+
+validate = PythonOperator(task_id="validate_harvest_data",
+                          python_callable=validate_harvests)
+extract >> validate >> load  # validate before loading to BQ`},
+],
+
+p3:[
+{title:"Vertex AI Yield Prediction Model",chips:["Vertex AI","scikit-learn","BigQuery ML"],
+concept:"The yield predictor uses historical BigQuery data to train a Gradient Boosting model. Vertex AI handles model storage, versioning, and serving — you deploy once and call the endpoint from your FastAPI service. Start with BigQuery ML (just SQL) to prove value fast, then graduate to a custom scikit-learn model uploaded to Vertex AI for more control.",
+code:`# ml/train_yield_model.py
+from google.cloud import aiplatform, bigquery
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.model_selection import train_test_split
+import joblib, json, pathlib
+
+def train():
+    bq = bigquery.Client()
+    df = bq.query("""
+        SELECT area_rai, EXTRACT(MONTH FROM full_date) AS month,
+               weight_kg / area_rai AS yield_per_rai
+        FROM agrichain.fact_harvests f
+        JOIN agrichain.dim_date d USING (date_id)
+        WHERE quality_grade IS NOT NULL
+    """).to_dataframe()
+
+    X = df[["area_rai","month"]]
+    y = df["yield_per_rai"]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+    model = GradientBoostingRegressor(n_estimators=200, max_depth=4)
+    model.fit(X_train, y_train)
+    print(f"R² score: {model.score(X_test, y_test):.3f}")
+
+    pathlib.Path("model/").mkdir(exist_ok=True)
+    joblib.dump(model, "model/model.joblib")  # Vertex AI expects this filename
+
+    aiplatform.init(project="your-project", location="asia-southeast1")
+    model_v = aiplatform.Model.upload(
+        display_name="agrichain-yield-predictor-v1",
+        artifact_uri="gs://agrichain-models/yield/",
+        serving_container_image_uri=
+          "us-docker.pkg.dev/vertex-ai/prediction/sklearn-cpu.1-3:latest",
+    )
+    endpoint = model_v.deploy(machine_type="n1-standard-2")
+
+    # Call from FastAPI:
+    # pred = endpoint.predict([[area_rai, month]])
+    # return {"predicted_kg_per_rai": pred.predictions[0]}`},
+
+{title:"Price Recommendation Engine",chips:["pandas","Prophet","BigQuery"],
+concept:"Price recommendation uses time-series forecasting on historical crop prices stored in BigQuery. Facebook's Prophet library (now available standalone) handles Thai seasonal patterns well — it models yearly cycles like planting/harvest seasons without manual feature engineering. The recommendation API compares the forecast with the contractor's proposed price and flags contracts priced below market.",
+code:`# services/price_recommender.py
+from prophet import Prophet
+from google.cloud import bigquery
+import pandas as pd
+
+class PriceRecommender:
+    def get_forecast(self, crop_type: str, target_date: str) -> dict:
+        bq = bigquery.Client()
+        df = bq.query(f"""
+            SELECT full_date AS ds, AVG(price_per_kg) AS y
+            FROM agrichain.fact_harvests f
+            JOIN agrichain.dim_date d USING (date_id)
+            JOIN agrichain.dim_crop  c USING (crop_id)
+            WHERE c.crop_name_en = '{crop_type}'
+            GROUP BY ds ORDER BY ds
+        """).to_dataframe()
+        df["ds"] = pd.to_datetime(df["ds"])
+
+        model = Prophet(
+            yearly_seasonality=True,
+            weekly_seasonality=False,   # crop prices don't vary weekly
+            changepoint_prior_scale=0.1,
+        )
+        model.fit(df)
+
+        future = model.make_future_dataframe(periods=90)
+        forecast = model.predict(future)
+        target = forecast[forecast["ds"] == target_date].iloc[0]
+
+        return {
+            "crop_type":        crop_type,
+            "target_date":      target_date,
+            "recommended_price": round(target["yhat"], 2),
+            "lower_bound":       round(target["yhat_lower"], 2),
+            "upper_bound":       round(target["yhat_upper"], 2),
+        }`},
+
+{title:"Cloud Monitoring + Custom Metrics",chips:["Cloud Monitoring","Alerting","SLO"],
+concept:"Beyond GCP's default metrics (CPU, request count), you publish business metrics — contracts signed per day, payment batches processed, failed quality checks — as custom Cloud Monitoring metrics. Set SLO (Service Level Objective) on API latency (e.g., p95 < 500ms) and create an alerting policy that pages you via email or Line Notify when the threshold is breached.",
+code:`# monitoring/business_metrics.py
+from google.cloud import monitoring_v3
+from google.protobuf.timestamp_pb2 import Timestamp
+import time
+
+client = monitoring_v3.MetricServiceClient()
+PROJECT  = "projects/your-project"
+METRIC   = "custom.googleapis.com/agrichain"
+
+def write_gauge(metric_type: str, value: float, labels: dict):
+    series = monitoring_v3.TimeSeries()
+    series.metric.type = f"{METRIC}/{metric_type}"
+    series.metric.labels.update(labels)
+    series.resource.type = "global"
+
+    now = time.time()
+    interval = monitoring_v3.TimeInterval(
+        {"end_time": {"seconds": int(now), "nanos": 0}}
+    )
+    point = monitoring_v3.Point({
+        "interval": interval,
+        "value": {"double_value": value}
+    })
+    series.points = [point]
+    client.create_time_series(name=PROJECT, time_series=[series])
+
+# Usage after contract is signed:
+write_gauge("contracts_signed_total", 1.0,
+            {"farm_id": farm_id, "crop_type": crop_type})
+
+# Alert policy (Terraform):
+# resource "google_monitoring_alert_policy" "latency" {
+#   display_name = "API p95 latency > 500ms"
+#   conditions { ... threshold_value = 500 }
+#   notification_channels = [google_monitoring_notification_channel.email.name]
+# }`},
+
+{title:"Multi-Environment Terraform Setup",chips:["Terraform Workspaces","tfvars","GitOps"],
+concept:"One Terraform codebase manages three environments. Variables in environments/prod.tfvars override defaults for production (larger DB tier, deletion protection on). GitHub branch protection ensures Terraform plans run against staging before merging to main, which triggers the prod apply. This is the GitOps pattern — infrastructure changes go through git like code.",
+code:`# Directory structure:
+# infra/
+#   main.tf, variables.tf, outputs.tf
+#   environments/
+#     dev.tfvars    staging.tfvars    prod.tfvars
+
+# environments/prod.tfvars
+project_id          = "agrichain-prod"
+env                 = "prod"
+db_tier             = "db-custom-2-7680"
+cloudrun_max_inst   = 50
+deletion_protection = true
+enable_backups      = true
+
+# environments/dev.tfvars
+project_id          = "agrichain-dev"
+env                 = "dev"
+db_tier             = "db-f1-micro"
+cloudrun_max_inst   = 3
+deletion_protection = false
+
+# variables.tf
+variable "env"                 { default = "dev" }
+variable "db_tier"             { default = "db-f1-micro" }
+variable "deletion_protection" { default = false }
+
+# Deploy commands:
+# Dev:     terraform apply -var-file=environments/dev.tfvars
+# Staging: terraform apply -var-file=environments/staging.tfvars
+# Prod:    terraform apply -var-file=environments/prod.tfvars -auto-approve`},
+
+{title:"Load Testing with Locust",chips:["Locust","Performance","k6"],
+concept:"Load testing before launch finds bottlenecks: is it the API, the DB connection pool, or Cloud SQL? Locust is a Python-based load test tool — you write user behaviors as Python classes, then simulate hundreds of concurrent farm owners hitting the dashboard. Add Cloud SQL connection pool sizing (SQLAlchemy's pool_size and max_overflow) based on the results.",
+code:`# locustfile.py
+from locust import HttpUser, task, between
+import random
+
+class FarmOwnerUser(HttpUser):
+    wait_time = between(1, 3)   # seconds between tasks
+    token = None
+
+    def on_start(self):
+        """Login once per simulated user."""
+        r = self.client.post("/api/v1/auth/login",
+                             json={"email":"test@farm.th","password":"test1234"})
+        self.token = r.json()["access_token"]
+        self.client.headers["Authorization"] = f"Bearer {self.token}"
+
+    @task(5)   # weight 5: common action
+    def view_contracts(self):
+        self.client.get("/api/v1/contracts?status=active")
+
+    @task(2)
+    def view_harvest_history(self):
+        contract_id = random.choice(["uuid-1","uuid-2","uuid-3"])
+        self.client.get(f"/api/v1/contracts/{contract_id}/harvests")
+
+    @task(1)   # weight 1: rare action
+    def create_contract(self):
+        self.client.post("/api/v1/contracts", json={
+            "contractor_id": "uuid-contractor",
+            "crop_type": "sugarcane",
+            "area_rai": 50, "price_per_kg": 0.95,
+            "season_start": "2026-05-01", "season_end": "2026-11-30"
+        })
+# Run: locust -f locustfile.py --host https://your-api.run.app`},
+
+{title:"Portfolio: README + Architecture Diagram",chips:["Mermaid","GitHub","Demo"],
+concept:"The README is your project's resume — interviewers spend 90 seconds on it. Include a Mermaid architecture diagram (GitHub renders it natively), a GIF demo, one-command local setup (docker-compose up), and a live demo URL. The architecture section proves you understand the system end-to-end, which is what separates a 'project doer' from a senior engineer.",
+code:`# README.md structure  (write this at the very end — month 6)
+
+## AgriChain — Contract Farming Platform
+> Live demo: https://agrichain.run.app
+> Stack: Python · FastAPI · Next.js · BigQuery · Airflow · Vertex AI · GCP
+
+## Architecture
+\`\`\`mermaid
+flowchart LR
+    FE[Next.js Frontend] --> API[FastAPI / Cloud Run]
+    API --> SQL[(Cloud SQL\nPostgres)]
+    API --> PS[Pub/Sub]
+    PS  --> DF[Dataflow\nStreaming]
+    DF  --> BQ[(BigQuery)]
+    AIR[Airflow / Composer] --> BQ
+    BQ  --> VA[Vertex AI\nYield Predictor]
+    BQ  --> LS[Looker Studio]
+\`\`\`
+
+## Local Setup (3 commands)
+\`\`\`bash
+git clone https://github.com/you/agrichain
+docker compose up          # starts API + Postgres + Redis
+open http://localhost:3000
+\`\`\`
+
+## Key Engineering Decisions
+- **Why Pub/Sub over direct DB writes for harvests?**
+  Decouples the real-time API from the analytics pipeline.
+  Harvest logging stays <50ms even when BigQuery is slow.
+- **Why ELT over ETL?**  Transform inside BigQuery (free + fast)
+  rather than spinning up expensive compute in the middle.`},
+]
+};
+
+function showPhase(id, btn) {
+  document.querySelectorAll(".phase-panel").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".ptab").forEach(b => b.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  btn.classList.add("active");
+}
+
+function toggle(card) {
+  const body = card.querySelector(".feat-body");
+  const chev = card.querySelector(".chev");
+  const isOpen = body.classList.contains("open");
+  const panel = card.closest(".phase-panel");
+  panel.querySelectorAll(".feat-body").forEach(b => b.classList.remove("open"));
+  panel.querySelectorAll(".chev").forEach(c => c.classList.remove("open"));
+  if (!isOpen) { body.classList.add("open"); chev.classList.add("open"); }
+}
+
+function renderPhase(phaseId, numClass) {
+  const list = document.getElementById(phaseId + "-list");
+  DATA[phaseId].forEach((f, i) => {
+    const card = document.createElement("div");
+    card.className = "feat-card";
+    card.onclick = () => toggle(card);
+    const chips = f.chips.map(c => `<span class="chip">${c}</span>`).join("");
+    const escaped = f.code
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    card.innerHTML = `
+      <div class="feat-header">
+        <span class="feat-num ${numClass}">${i+1}</span>
+        <span class="feat-title">${f.title}</span>
+        <div class="feat-chips">${chips}</div>
+        <span class="chev">▶</span>
+      </div>
+      <div class="feat-body">
+        <div class="concept-box">
+          <div class="concept-label">Technical Concept</div>
+          <div class="concept-text">${f.concept}</div>
+        </div>
+        <div class="code-box">
+          <div class="code-label">Implementation Example</div>
+          <div class="code-wrap">
+            <pre><code class="language-python">${escaped}</code></pre>
+          </div>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+renderPhase("p1","p1-num");
+renderPhase("p2","p2-num");
+renderPhase("p3","p3-num");
+
+// Apply highlight.js
+setTimeout(() => {
+  document.querySelectorAll("pre code").forEach(el => hljs.highlightElement(el));
+  // Dark mode: override hljs background to match theme
+  const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+  if (dark) {
+    document.getElementById("hljs-light").disabled = true;
+    document.getElementById("hljs-dark-style").textContent =
+      `.hljs{background:var(--color-background-secondary)!important;color:#abb2bf}
+       .hljs-keyword{color:#c678dd}.hljs-string{color:#98c379}
+       .hljs-comment{color:#5c6370}.hljs-number{color:#d19a66}
+       .hljs-title{color:#61afef}.hljs-built_in{color:#e5c07b}
+       .hljs-decorator,.hljs-meta{color:#e06c75}`;
+  }
+}, 300);
+</script>

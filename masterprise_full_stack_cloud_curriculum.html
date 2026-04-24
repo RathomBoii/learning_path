@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Masterprise AWS Service Curriculum</title>
+  <style>
+    :root {
+      --bg: #f4efe6;
+      --panel: rgba(255, 251, 246, 0.82);
+      --panel-strong: #fffaf2;
+      --text: #1d1a16;
+      --muted: #6c6258;
+      --border: rgba(93, 77, 61, 0.18);
+      --shadow: 0 20px 50px rgba(61, 46, 35, 0.12);
+      --accent-a: #1c6ea4;
+      --accent-b: #0f8c6c;
+      --accent-c: #aa6722;
+      --accent-d: #7b3fe4;
+      --pill: rgba(255, 255, 255, 0.72);
+      --code: #221d18;
+      --font-sans: "Avenir Next", "Segoe UI", sans-serif;
+      --font-mono: "SFMono-Regular", "Menlo", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(28, 110, 164, 0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(15, 140, 108, 0.16), transparent 32%),
+        linear-gradient(180deg, #f7f2e9 0%, #efe6da 100%);
+      min-height: 100vh;
+      padding: 32px 18px 72px;
+    }
+
+    .shell {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.85fr);
+      margin-bottom: 28px;
+    }
+
+    .hero-panel,
+    .focus-panel,
+    .section-panel,
+    .card {
+      background: var(--panel);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-panel {
+      padding: 34px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-panel::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      right: -50px;
+      top: -40px;
+      background: radial-gradient(circle, rgba(170, 103, 34, 0.18), transparent 65%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(28, 110, 164, 0.14);
+      color: var(--accent-a);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 4.4rem);
+      line-height: 0.95;
+      margin-bottom: 16px;
+      max-width: 12ch;
+    }
+
+    .hero-copy {
+      font-size: 1.02rem;
+      line-height: 1.75;
+      color: var(--muted);
+      max-width: 72ch;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .hero-stat {
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(93, 77, 61, 0.1);
+    }
+
+    .hero-stat strong {
+      display: block;
+      font-size: 1.8rem;
+      margin-bottom: 6px;
+    }
+
+    .hero-stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .focus-panel {
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      background: linear-gradient(180deg, rgba(255, 250, 242, 0.92), rgba(250, 241, 230, 0.88));
+    }
+
+    .focus-panel h2,
+    .section-header h2 {
+      font-size: 1.35rem;
+      margin-bottom: 4px;
+    }
+
+    .focus-panel p,
+    .section-header p {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .priority-list,
+    .story-list,
+    .deliverable-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .priority-item,
+    .story-item,
+    .deliverable-item {
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(93, 77, 61, 0.1);
+    }
+
+    .priority-item strong,
+    .story-item strong,
+    .deliverable-item strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.95rem;
+    }
+
+    .priority-item span,
+    .story-item span,
+    .deliverable-item span {
+      color: var(--muted);
+      font-size: 0.93rem;
+      line-height: 1.55;
+    }
+
+    .section-panel {
+      padding: 26px;
+      margin-bottom: 22px;
+    }
+
+    .section-header {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .phase-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    .ptab {
+      border: 0;
+      background: rgba(255, 255, 255, 0.64);
+      color: var(--muted);
+      padding: 10px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.93rem;
+      font-weight: 700;
+      transition: transform 0.16s ease, color 0.16s ease, background 0.16s ease;
+      border: 1px solid rgba(93, 77, 61, 0.08);
+    }
+
+    .ptab:hover {
+      transform: translateY(-1px);
+      color: var(--text);
+    }
+
+    .ptab.active {
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .ptab[data-phase="track1"].active { background: var(--accent-a); }
+    .ptab[data-phase="track2"].active { background: var(--accent-b); }
+    .ptab[data-phase="track3"].active { background: var(--accent-c); }
+    .ptab[data-phase="track4"].active { background: var(--accent-d); }
+
+    .phase-panel { display: none; }
+    .phase-panel.active { display: block; }
+
+    .feat-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .card {
+      overflow: hidden;
+      transition: border-color 0.16s ease, transform 0.16s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-1px);
+      border-color: rgba(93, 77, 61, 0.28);
+    }
+
+    .card-header {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 18px 20px;
+      cursor: pointer;
+    }
+
+    .card-num {
+      min-width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.92rem;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: inset 0 -10px 22px rgba(0, 0, 0, 0.12);
+    }
+
+    .track1-num { background: linear-gradient(135deg, #1c6ea4, #52a3da); }
+    .track2-num { background: linear-gradient(135deg, #0f8c6c, #3fb690); }
+    .track3-num { background: linear-gradient(135deg, #aa6722, #e2a459); }
+    .track4-num { background: linear-gradient(135deg, #7b3fe4, #af82ff); }
+
+    .card-main {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .card-main h3 {
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+    }
+
+    .card-subtitle {
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 0.94rem;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .chip {
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: var(--pill);
+      border: 1px solid rgba(93, 77, 61, 0.1);
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .chev {
+      color: var(--muted);
+      transition: transform 0.18s ease;
+      padding-top: 3px;
+      font-size: 0.92rem;
+    }
+
+    .chev.open { transform: rotate(90deg); }
+
+    .card-body {
+      display: none;
+      border-top: 1px solid rgba(93, 77, 61, 0.12);
+      background: rgba(255, 253, 249, 0.84);
+      padding: 0 20px 20px;
+    }
+
+    .card-body.open { display: block; }
+
+    .body-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .body-block {
+      padding: 16px;
+      border-radius: 20px;
+      background: var(--panel-strong);
+      border: 1px solid rgba(93, 77, 61, 0.08);
+    }
+
+    .body-block h4 {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .body-block p,
+    .body-block li,
+    .roadmap-note,
+    .footer-note {
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+
+    .body-block ul {
+      padding-left: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .resource-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .resource-list a {
+      text-decoration: none;
+      color: var(--accent-a);
+      background: rgba(28, 110, 164, 0.08);
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 0.86rem;
+      font-weight: 600;
+    }
+
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .roadmap-step {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(93, 77, 61, 0.08);
+    }
+
+    .roadmap-step strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 1100px) {
+      .hero,
+      .body-grid,
+      .roadmap-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      body { padding: 18px 14px 48px; }
+      .hero-panel,
+      .focus-panel,
+      .section-panel,
+      .card-body,
+      .card-header {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      .card-header { gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="hero-panel">
+        <div class="eyebrow">Masterprise AWS Blueprint</div>
+        <h1>AWS Full-Stack Builder, Platform Architect, Service Strategist</h1>
+        <p class="hero-copy">
+          This roadmap reframes the curriculum around AWS service families end to end: foundation, app delivery, data and AI,
+          security, operations, governance, migration, and portfolio proof. The goal is not memorizing isolated services. The goal
+          is learning how AWS services combine into one credible platform and how to justify service selection under real constraints.
+        </p>
+        <div class="hero-grid">
+          <div class="hero-stat">
+            <strong>4</strong>
+            <span>Integrated tracks covering platform foundations, app and data services, operations, and portfolio execution.</span>
+          </div>
+          <div class="hero-stat">
+            <strong>70+</strong>
+            <span>AWS services and service families mapped into practical decision sets instead of isolated exam notes.</span>
+          </div>
+          <div class="hero-stat">
+            <strong>1</strong>
+            <span>Main story: you can design, ship, secure, observe, and evolve one AWS-native system from edge to analytics.</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="focus-panel">
+        <div>
+          <h2>Positioning Goal</h2>
+          <p>
+            Present yourself as an engineer who understands the AWS landscape by capability: identity, network, compute, storage,
+            integration, databases, analytics, AI, security, resilience, and governance. The strongest signal is one coherent AWS-native
+            platform, not a checklist of unrelated labs.
+          </p>
+        </div>
+        <div class="priority-list">
+          <div class="priority-item">
+            <strong>Primary artifact</strong>
+            <span>One AWS-native flagship system with architecture, IaC, CI/CD, observability, security controls, data flows, and business narrative.</span>
+          </div>
+          <div class="priority-item">
+            <strong>Secondary artifacts</strong>
+            <span>Two or three focused repos for uncovered AWS domains such as hybrid migration, FinOps automation, IoT, media, or contact-center workflows.</span>
+          </div>
+          <div class="priority-item">
+            <strong>Hiring signal</strong>
+            <span>Show that you understand service trade-offs, not just service names. Every module below should end in a deployable, measurable, or explainable AWS output.</span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section-panel">
+      <div class="section-header">
+        <div class="eyebrow">Interactive Curriculum</div>
+        <h2>Masterprise AWS Service Map</h2>
+        <p>
+          Open each card for the service family, build targets, and learning outputs. The tracks intentionally organize AWS by how
+          real platforms are designed and operated so your portfolio reads like one system instead of dozens of disconnected services.
+        </p>
+      </div>
+
+      <div class="phase-tabs">
+        <button class="ptab active" data-phase="track1" onclick="showPhase('track1', this)">Track 1 · AWS Foundations</button>
+        <button class="ptab" data-phase="track2" onclick="showPhase('track2', this)">Track 2 · App, Data, AI Services</button>
+        <button class="ptab" data-phase="track3" onclick="showPhase('track3', this)">Track 3 · Platform, Security, Operations</button>
+        <button class="ptab" data-phase="track4" onclick="showPhase('track4', this)">Track 4 · Portfolio, Domains, Career Story</button>
+      </div>
+
+      <div id="track1" class="phase-panel active"><div class="feat-list" id="track1-list"></div></div>
+      <div id="track2" class="phase-panel"><div class="feat-list" id="track2-list"></div></div>
+      <div id="track3" class="phase-panel"><div class="feat-list" id="track3-list"></div></div>
+      <div id="track4" class="phase-panel"><div class="feat-list" id="track4-list"></div></div>
+    </section>
+
+    <section class="section-panel">
+      <div class="section-header">
+        <div class="eyebrow">Execution Model</div>
+        <h2>Suggested Build Sequence</h2>
+        <p>
+          This is the shortest path to credible AWS breadth. Learn by service family, prove each family in one platform, then expand into specialized AWS domains only after the core operating model works.
+        </p>
+      </div>
+      <div class="roadmap-grid">
+        <div class="roadmap-step">
+          <strong>Phase 1</strong>
+          <p class="roadmap-note">Start with identity, account structure, IAM, networking, compute choices, storage, and backup until AWS primitives feel predictable.</p>
+        </div>
+        <div class="roadmap-step">
+          <strong>Phase 2</strong>
+          <p class="roadmap-note">Add application, integration, database, streaming, analytics, and AI services as one end-to-end business workload.</p>
+        </div>
+        <div class="roadmap-step">
+          <strong>Phase 3</strong>
+          <p class="roadmap-note">Wrap the platform with IaC, CI/CD, container orchestration, observability, security controls, resilience, and governance.</p>
+        </div>
+        <div class="roadmap-step">
+          <strong>Phase 4</strong>
+          <p class="roadmap-note">Extend into specialized AWS domains such as migration, IoT, media, end-user computing, or Connect, then package the portfolio story and interview proof.</p>
+        </div>
+      </div>
+      <p class="footer-note">
+        Recommended capstone theme: a business-facing AWS platform with secure multi-account foundations, event-driven APIs, transactional and analytical data paths, AI augmentation, GitOps or CI/CD delivery, and measurable operational dashboards.
+      </p>
+    </section>
+  </div>
+
+  <script>
+    const DATA = {
+      track1: [
+        {
+          title: "Identity, Multi-Account, and Governance Baseline",
+          subtitle: "Start with the AWS control plane: Organizations, IAM, Identity Center, Control Tower, KMS, Secrets Manager, and guardrails.",
+          chips: ["Organizations", "IAM", "Identity Center", "Control Tower", "KMS"],
+          concept: "Everything in AWS starts with trust boundaries. If account design, identity, encryption, and guardrails are weak, every later service decision inherits the same risk. Learn AWS by building the landing zone first.",
+          outcomes: [
+            "Design multi-account structures for sandbox, shared services, security, data, and production workloads.",
+            "Apply IAM roles, permission boundaries, SCPs, federation, KMS keys, and secrets handling with least privilege.",
+            "Explain when to use IAM users, Identity Center, resource policies, service-linked roles, and cross-account access."
+          ],
+          deliverables: [
+            "A reference AWS landing zone with account boundaries, naming standards, tagging, and baseline policies.",
+            "An access model for engineers, pipelines, workloads, and auditors using temporary credentials only.",
+            "A short governance note showing how guardrails prevent drift without blocking delivery."
+          ],
+          resources: [
+            ["AWS Organizations", "https://docs.aws.amazon.com/organizations/latest/userguide/"],
+            ["IAM User Guide", "https://docs.aws.amazon.com/IAM/latest/UserGuide/"],
+            ["AWS Control Tower", "https://docs.aws.amazon.com/controltower/latest/userguide/"]
+          ]
+        },
+        {
+          title: "Networking, Edge, and Hybrid Connectivity",
+          subtitle: "Map AWS networking from VPC basics to edge delivery and hybrid paths: VPC, Route 53, ELB, Transit Gateway, CloudFront, Direct Connect, VPN, and Global Accelerator.",
+          chips: ["VPC", "Route 53", "CloudFront", "Transit Gateway", "Direct Connect"],
+          concept: "Most AWS architectures succeed or fail on network clarity: segmentation, routing, ingress, egress, private service access, DNS, TLS, and latency control. This card turns generic networking knowledge into AWS-native patterns.",
+          outcomes: [
+            "Design public and private subnet layouts, egress strategy, service endpoints, and east-west boundaries.",
+            "Choose between ALB, NLB, API Gateway, CloudFront, Global Accelerator, and Route 53 routing policies.",
+            "Explain when hybrid connectivity needs VPN, Direct Connect, Transit Gateway, PrivateLink, or VPC peering."
+          ],
+          deliverables: [
+            "A network decision matrix covering web, API, internal services, hybrid, and multi-region paths.",
+            "A VPC reference design with endpoints, inspection points, edge routing, and certificate flow.",
+            "A troubleshooting checklist for DNS, TLS, SG, NACL, endpoint, and routing failures."
+          ],
+          resources: [
+            ["Amazon VPC", "https://docs.aws.amazon.com/vpc/latest/userguide/"],
+            ["Elastic Load Balancing", "https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/what-is-load-balancing.html"],
+            ["Amazon CloudFront", "https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/Introduction.html"]
+          ]
+        },
+        {
+          title: "Compute and Runtime Decision Model",
+          subtitle: "Learn AWS compute as a placement problem: EC2, Auto Scaling, Lambda, ECS, EKS, Fargate, Batch, App Runner, Elastic Beanstalk, and Lightsail.",
+          chips: ["EC2", "Lambda", "ECS", "EKS", "Fargate"],
+          concept: "AWS gives you many compute options because workloads differ in runtime control, operational burden, scaling behavior, and cost profile. The skill is not service recall. The skill is choosing the right execution model for each workload.",
+          outcomes: [
+            "Differentiate host-managed, container-managed, and function-based runtimes with clear trade-offs.",
+            "Map synchronous APIs, background jobs, event consumers, batch workloads, and edge functions to the right AWS runtime.",
+            "Explain how autoscaling, startup time, patching, and workload isolation affect architecture choices."
+          ],
+          deliverables: [
+            "A runtime selection matrix comparing EC2, ECS, EKS, Lambda, Batch, and App Runner for the same business system.",
+            "At least two service implementations of the same workload, such as ECS versus Lambda or EC2 versus EKS.",
+            "A cost and operations note documenting why the chosen runtime won."
+          ],
+          resources: [
+            ["Amazon EC2", "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/"],
+            ["AWS Lambda", "https://docs.aws.amazon.com/lambda/latest/dg/welcome.html"],
+            ["Amazon ECS", "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html"]
+          ]
+        },
+        {
+          title: "Storage, File Systems, and Data Protection",
+          subtitle: "Cover AWS persistence layers broadly: S3, EBS, EFS, FSx, Glacier classes, Backup, DataSync, and Storage Gateway.",
+          chips: ["S3", "EBS", "EFS", "FSx", "AWS Backup"],
+          concept: "Storage choices shape performance, retention, compliance, portability, and disaster recovery. You need to understand object, block, file, archive, and hybrid storage as one portfolio rather than separate services.",
+          outcomes: [
+            "Choose between object, block, file, and archive storage based on workload behavior and access patterns.",
+            "Apply lifecycle policies, replication, versioning, backup plans, and restore testing deliberately.",
+            "Explain where DataSync, Storage Gateway, Transfer Family, and Snow services fit into movement and migration."
+          ],
+          deliverables: [
+            "A storage architecture map covering application assets, databases, analytics zones, backups, and archival paths.",
+            "A tested backup and restore workflow for at least one database or file-backed service.",
+            "A lifecycle policy set showing tiering, retention, legal hold, and recovery objectives."
+          ],
+          resources: [
+            ["Amazon S3", "https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html"],
+            ["AWS Backup", "https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html"],
+            ["AWS Storage Overview", "https://aws.amazon.com/products/storage/"]
+          ]
+        }
+      ],
+      track2: [
+        {
+          title: "API, Web, and Front-Door Services",
+          subtitle: "Build application entry points with API Gateway, AppSync, ALB, CloudFront, Cognito, Amplify, WAF, and Certificate Manager.",
+          chips: ["API Gateway", "AppSync", "Cognito", "Amplify", "ACM"],
+          concept: "Front-door architecture decides how users, mobile apps, partners, and internal clients enter the system. AWS offers different paths because API style, auth model, caching, edge behavior, and protocol support vary by workload.",
+          outcomes: [
+            "Choose between REST, HTTP API, GraphQL, and private API patterns with the right authentication and throttling model.",
+            "Design session, token, and identity flows using Cognito, custom auth, or enterprise federation.",
+            "Explain where CloudFront, WAF, ACM, and edge caching belong in application delivery."
+          ],
+          deliverables: [
+            "A secure front-door stack for web or mobile users with auth, rate limiting, TLS, and request tracing.",
+            "A sample comparison of API Gateway versus ALB versus AppSync for one product use case.",
+            "A small UI or documentation portal deployed through CloudFront or Amplify."
+          ],
+          resources: [
+            ["Amazon API Gateway", "https://docs.aws.amazon.com/apigateway/latest/developerguide/welcome.html"],
+            ["AWS AppSync", "https://docs.aws.amazon.com/appsync/latest/devguide/what-is-appsync.html"],
+            ["Amazon Cognito", "https://docs.aws.amazon.com/cognito/latest/developerguide/what-is-amazon-cognito.html"]
+          ]
+        },
+        {
+          title: "Integration, Messaging, and Workflow Orchestration",
+          subtitle: "Use EventBridge, SQS, SNS, Step Functions, MQ, SES, AppFlow, and SWF patterns to decouple systems and automate business flows.",
+          chips: ["EventBridge", "SQS", "SNS", "Step Functions", "AppFlow"],
+          concept: "AWS integration services let you separate request latency from business processing. The value is not just asynchronous messaging. It is durable orchestration, event routing, retries, fan-out, partner integration, and automation across services.",
+          outcomes: [
+            "Design event-driven workflows with replay, DLQ handling, ordering decisions, idempotency, and compensation paths.",
+            "Choose between queues, topics, event buses, managed workflow orchestration, and email or SaaS integration services.",
+            "Explain how message semantics change design for notifications, commands, streams, and long-running approvals."
+          ],
+          deliverables: [
+            "An event-driven slice of the capstone using at least one queue, one event bus, and one workflow orchestrator.",
+            "A failure-mode playbook covering retries, DLQs, poison messages, and replay strategy.",
+            "A service contract document for events, commands, and subscriber responsibilities."
+          ],
+          resources: [
+            ["Amazon EventBridge", "https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-what-is.html"],
+            ["Amazon SQS", "https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html"],
+            ["AWS Step Functions", "https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html"]
+          ]
+        },
+        {
+          title: "Transactional Databases, Cache, and Specialized Stores",
+          subtitle: "Cover the database portfolio: RDS, Aurora, DynamoDB, ElastiCache, DocumentDB, Neptune, Timestream, and QLDB patterns.",
+          chips: ["RDS", "Aurora", "DynamoDB", "ElastiCache", "Neptune"],
+          concept: "AWS has many data stores because access patterns differ. Learn the portfolio by data shape, transaction model, consistency needs, graph relationships, time-series retention, and caching strategy.",
+          outcomes: [
+            "Choose the right store for OLTP, key-value access, session state, graph traversal, time-series, or immutable audit needs.",
+            "Model partition keys, indexes, read and write scaling, failover, backup, and global availability trade-offs.",
+            "Explain where caching, read replicas, global tables, and serverless database options reduce operational load."
+          ],
+          deliverables: [
+            "A persistence map showing which AWS data stores back each feature of the capstone.",
+            "One migration or schema evolution plan for both relational and non-relational paths.",
+            "A benchmark or workload note that justifies at least one database choice with evidence."
+          ],
+          resources: [
+            ["Amazon RDS", "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/"],
+            ["Amazon DynamoDB", "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html"],
+            ["Amazon ElastiCache", "https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/WhatIs.html"]
+          ]
+        },
+        {
+          title: "Streaming, Lakehouse, and Analytics Services",
+          subtitle: "Build the data path with Kinesis, MSK, Glue, Lake Formation, Athena, EMR, Redshift, OpenSearch, QuickSight, and DataBrew.",
+          chips: ["Kinesis", "Glue", "Athena", "Redshift", "QuickSight"],
+          concept: "AWS analytics is a layered system: ingest, catalog, secure, transform, query, search, and visualize. You need to understand how streaming and batch land in the same analytical platform with governance built in.",
+          outcomes: [
+            "Design raw, curated, and serving zones using S3, Glue cataloging, and Lake Formation permissions.",
+            "Choose between Athena, Redshift, EMR, OpenSearch, and QuickSight based on workload type and performance needs.",
+            "Explain where Kinesis, MSK, Firehose, and Glue streaming fit into near-real-time analytics."
+          ],
+          deliverables: [
+            "A lakehouse slice with event ingestion, transformation, governance, query layer, and a business-facing dashboard.",
+            "A data quality and lineage note for critical datasets, including access boundaries and refresh strategy.",
+            "A comparison of one serverless and one cluster-based analytics path for the same workload."
+          ],
+          resources: [
+            ["AWS Glue", "https://docs.aws.amazon.com/glue/latest/dg/what-is-glue.html"],
+            ["Amazon Athena", "https://docs.aws.amazon.com/athena/latest/ug/what-is.html"],
+            ["Amazon Redshift", "https://docs.aws.amazon.com/redshift/latest/mgmt/welcome.html"]
+          ]
+        },
+        {
+          title: "AI, ML, and Generative AI Services",
+          subtitle: "Position AI as a service portfolio: SageMaker, Bedrock, Textract, Comprehend, Transcribe, Rekognition, Lex, Personalize, and Kendra patterns.",
+          chips: ["Bedrock", "SageMaker", "Textract", "Lex", "Comprehend"],
+          concept: "Modern AWS platforms increasingly combine application logic with managed AI services. The practical skill is knowing when to use a prebuilt AI API, when to orchestrate a foundation model, and when a custom ML workflow is worth the cost.",
+          outcomes: [
+            "Distinguish managed AI APIs, foundation model orchestration, vector-enabled retrieval, and custom training workflows.",
+            "Design safe AI integration with structured prompts, model access control, human review, and audit-friendly logs.",
+            "Explain where Bedrock, SageMaker, and specialized AI services fit into document processing, chat, recommendations, and search."
+          ],
+          deliverables: [
+            "One AI-augmented feature in the capstone, such as summarization, retrieval, document extraction, or assistant workflow.",
+            "A model selection note covering latency, cost, privacy, and fallback behavior.",
+            "An evaluation sheet that measures quality, failure patterns, and operational safety."
+          ],
+          resources: [
+            ["Amazon Bedrock", "https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-bedrock.html"],
+            ["Amazon SageMaker", "https://docs.aws.amazon.com/sagemaker/latest/dg/whatis.html"],
+            ["AWS AI Services", "https://aws.amazon.com/machine-learning/ai-services/"]
+          ]
+        }
+      ],
+      track3: [
+        {
+          title: "Infrastructure as Code and Platform Assembly",
+          subtitle: "Model AWS platforms with CloudFormation, CDK, Terraform, Service Catalog, Proton, and reusable module patterns.",
+          chips: ["CloudFormation", "CDK", "Terraform", "Service Catalog", "Proton"],
+          concept: "AWS breadth becomes manageable only when infrastructure is standardized. IaC is how you turn many AWS services into repeatable products, templates, and internal platforms instead of manual console work.",
+          outcomes: [
+            "Choose the right abstraction level between raw templates, higher-level constructs, and opinionated product templates.",
+            "Build reusable modules for identity, networking, compute, data, and observability without over-generalizing.",
+            "Explain how change sets, plans, policy checks, drift detection, and environment promotion reduce delivery risk."
+          ],
+          deliverables: [
+            "A reusable platform blueprint that can stand up the capstone environment consistently across environments.",
+            "CI validation for formatting, policy-as-code, security scanning, and infrastructure planning.",
+            "A short internal platform guide describing inputs, outputs, ownership, and allowed service variations."
+          ],
+          resources: [
+            ["AWS CDK", "https://docs.aws.amazon.com/cdk/v2/guide/home.html"],
+            ["AWS CloudFormation", "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html"],
+            ["AWS Proton", "https://docs.aws.amazon.com/proton/latest/userguide/Welcome.html"]
+          ]
+        },
+        {
+          title: "Containers, Kubernetes, and Service Platform Operations",
+          subtitle: "Operate modern runtimes with ECR, ECS, EKS, Fargate, App Mesh, Cloud Map, and service discovery patterns.",
+          chips: ["ECR", "ECS", "EKS", "Fargate", "Cloud Map"],
+          concept: "Containers in AWS are a platform decision, not just a packaging decision. The important skill is understanding where ECS is simpler, where EKS is justified, and how image, identity, networking, and deployment tooling affect day-two operations.",
+          outcomes: [
+            "Build secure container images, registries, task definitions, Helm charts, or workload specs that are production ready.",
+            "Choose between ECS and EKS using team capability, operational complexity, scaling, and ecosystem needs.",
+            "Explain how service discovery, mesh, ingress, autoscaling, and workload identity differ across runtimes."
+          ],
+          deliverables: [
+            "A container delivery path from source to ECR to ECS or EKS rollout with rollback strategy.",
+            "A runtime comparison note for ECS Fargate, ECS EC2, EKS managed nodes, and EKS serverless modes.",
+            "An operational runbook for image patching, deployment health, and workload rollback."
+          ],
+          resources: [
+            ["Amazon EKS", "https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html"],
+            ["Amazon ECR", "https://docs.aws.amazon.com/AmazonECR/latest/userguide/what-is-ecr.html"],
+            ["Amazon ECS", "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html"]
+          ]
+        },
+        {
+          title: "Observability, Reliability, and Incident Operations",
+          subtitle: "Use CloudWatch, X-Ray, CloudTrail, Config, Systems Manager, Health, Trusted Advisor, and Backup to operate with evidence.",
+          chips: ["CloudWatch", "X-Ray", "CloudTrail", "Config", "Systems Manager"],
+          concept: "AWS services create a lot of telemetry, but telemetry only matters if you can turn it into action. This module focuses on logs, metrics, traces, compliance evidence, fleet operations, and reliability workflows that support incident response.",
+          outcomes: [
+            "Instrument application and infrastructure health with metrics, alarms, tracing, structured logs, and synthetic checks.",
+            "Use CloudTrail, Config, and Systems Manager to answer what changed, what drifted, and what needs remediation.",
+            "Explain how backup, restore drills, multi-AZ design, DR patterns, and operational playbooks affect resilience."
+          ],
+          deliverables: [
+            "A dashboard set for service health, latency, error budget, cost hotspots, and security-relevant activity.",
+            "A runbook pack for incident triage, config drift, failed deployment rollback, and restore testing.",
+            "At least one automated remediation or maintenance workflow using Systems Manager or EventBridge automation."
+          ],
+          resources: [
+            ["Amazon CloudWatch", "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html"],
+            ["AWS Systems Manager", "https://docs.aws.amazon.com/systems-manager/latest/userguide/what-is-systems-manager.html"],
+            ["AWS CloudTrail", "https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-user-guide.html"]
+          ]
+        },
+        {
+          title: "Security Services and Threat Management",
+          subtitle: "Go beyond IAM with GuardDuty, Security Hub, Inspector, Macie, Detective, WAF, Shield, Firewall Manager, and Access Analyzer.",
+          chips: ["GuardDuty", "Security Hub", "Inspector", "WAF", "Macie"],
+          concept: "Security in AWS is a service portfolio. You need to understand how detective, preventive, and responsive controls work together across identity, network, compute, storage, and data. This is the difference between secure design and checkbox compliance.",
+          outcomes: [
+            "Map threat detection, vulnerability scanning, data protection, web protection, and posture management to concrete AWS controls.",
+            "Explain how findings flow from individual services into centralized security operations and response.",
+            "Decide which controls should be mandatory platform defaults and which should remain workload specific."
+          ],
+          deliverables: [
+            "A security control matrix for the capstone showing detection, prevention, response, and evidence sources.",
+            "A sample incident workflow from finding to triage to remediation and post-incident review.",
+            "A minimal threat model documenting attack surface, trust boundaries, and priority controls."
+          ],
+          resources: [
+            ["AWS Security Hub", "https://docs.aws.amazon.com/securityhub/latest/userguide/what-is-securityhub.html"],
+            ["Amazon GuardDuty", "https://docs.aws.amazon.com/guardduty/latest/ug/what-is-guardduty.html"],
+            ["AWS WAF", "https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html"]
+          ]
+        },
+        {
+          title: "Delivery, Governance, and FinOps Automation",
+          subtitle: "Link CodePipeline, CodeBuild, CodeDeploy, Budgets, Cost Explorer, CUR, Compute Optimizer, and Trusted Advisor into one operating model.",
+          chips: ["CodePipeline", "Budgets", "CUR", "Compute Optimizer", "Trusted Advisor"],
+          concept: "A mature AWS platform needs both fast delivery and cost discipline. This module ties release automation, deployment strategy, cost visibility, and governance reporting together so engineering decisions stay accountable over time.",
+          outcomes: [
+            "Implement CI and deployment flows with ephemeral credentials, approvals, artifact promotion, and rollback design.",
+            "Use budgets, usage reports, and optimization signals to detect waste and justify architecture changes.",
+            "Explain how tagging, cost allocation, and governance data support platform-level decision making."
+          ],
+          deliverables: [
+            "A pipeline that builds, scans, deploys, and records evidence for both application and infrastructure changes.",
+            "A cost dashboard or report that highlights unused resources, rightsizing opportunities, and storage tier changes.",
+            "A platform governance note linking delivery metrics, spend metrics, and ownership boundaries."
+          ],
+          resources: [
+            ["AWS CodePipeline", "https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome.html"],
+            ["AWS Cost Management", "https://docs.aws.amazon.com/cost-management/latest/userguide/"],
+            ["AWS Trusted Advisor", "https://docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html"]
+          ]
+        }
+      ],
+      track4: [
+        {
+          title: "Flagship AWS Capstone Architecture",
+          subtitle: "Turn the curriculum into one platform story spanning web, APIs, messaging, data, AI, security, and operations on AWS.",
+          chips: ["Capstone", "architecture", "multi-service", "AWS-native"],
+          concept: "The flagship project should demonstrate AWS breadth without feeling artificial. Pick one business system and let each AWS service family solve a real part of the workflow: authentication, front door, transactions, events, analytics, AI, observability, and governance.",
+          outcomes: [
+            "Choose a domain that naturally needs user interaction, asynchronous processing, analytics, and operational control.",
+            "Design the project so each major AWS service family has a justified role rather than cosmetic inclusion.",
+            "Keep architecture readable enough that interviewers can follow the service map quickly."
+          ],
+          deliverables: [
+            "A flagship repo or workspace with service code, IaC, diagrams, dashboards, security controls, and runbooks.",
+            "A single architecture view plus a set of detailed domain views for identity, application, data, and operations.",
+            "A demo script that walks through business flow, service interactions, failure handling, and cost posture."
+          ],
+          resources: [
+            ["AWS Architecture Center", "https://aws.amazon.com/architecture/"],
+            ["AWS Prescriptive Guidance", "https://docs.aws.amazon.com/prescriptive-guidance/latest/frameworks/welcome.html"],
+            ["AWS Well-Architected", "https://aws.amazon.com/architecture/well-architected/"]
+          ]
+        },
+        {
+          title: "Specialized AWS Domain Packs",
+          subtitle: "Use focused extensions to cover domain-specific AWS services such as IoT, media, end-user computing, migration, and contact center platforms.",
+          chips: ["IoT Core", "MediaConvert", "WorkSpaces", "Migration Hub", "Connect"],
+          concept: "No single capstone can use every AWS service deeply. The practical solution is to keep one core platform and add domain packs that show you understand specialized AWS service families when the business case demands them.",
+          outcomes: [
+            "Choose one or two specialized domains that match your target roles or industry context.",
+            "Map which services matter in each pack, such as IoT Core and Greengrass for telemetry, or Connect and Lex for customer operations.",
+            "Explain how specialized services integrate back into the core platform through events, storage, analytics, and identity."
+          ],
+          deliverables: [
+            "One optional domain pack architecture, such as IoT telemetry, media processing, digital workplace, or contact center automation.",
+            "A short service family comparison showing when the specialized pack should and should not be adopted.",
+            "An integration note describing data flow from the specialized domain back into the main platform."
+          ],
+          resources: [
+            ["AWS IoT", "https://aws.amazon.com/iot/"],
+            ["AWS Media Services", "https://aws.amazon.com/media-services/"],
+            ["Amazon Connect", "https://docs.aws.amazon.com/connect/latest/adminguide/what-is-amazon-connect.html"]
+          ]
+        },
+        {
+          title: "Certification and Market Alignment",
+          subtitle: "Translate the curriculum into role signals for Solutions Architect, DevOps, Platform Engineer, Data Engineer, Security, and AI roles on AWS.",
+          chips: ["SAA", "DVA", "SOA", "Security", "Data Engineer"],
+          concept: "Certifications are useful only when they reflect build capability. Use them as a map to sequence service families and to show employers that your hands-on portfolio lines up with recognized AWS role expectations.",
+          outcomes: [
+            "Map each curriculum track to relevant AWS role profiles and certification domains.",
+            "Prioritize the services that create the strongest signal for your target role while keeping cross-domain awareness.",
+            "Explain how your capstone and supporting repos validate the same topics that certification blueprints expect."
+          ],
+          deliverables: [
+            "A role-to-service matrix showing which projects prove which job signals.",
+            "A study plan tying official AWS exam domains to concrete artifacts in the portfolio.",
+            "Resume bullets that describe outcomes, not just service names."
+          ],
+          resources: [
+            ["AWS Certification", "https://aws.amazon.com/certification/"],
+            ["AWS Skill Builder", "https://explore.skillbuilder.aws/"],
+            ["Exam Prep Resources", "https://aws.amazon.com/training/learn-about/" ]
+          ]
+        },
+        {
+          title: "Interview Narrative and 90-Day Delivery Plan",
+          subtitle: "Compress the AWS-wide roadmap into a realistic build cadence and convert each milestone into portfolio proof and interview stories.",
+          chips: ["90 days", "STAR", "trade-offs", "delivery"],
+          concept: "Breadth only matters if you can explain it. Use a 90-day sequence to ship visible artifacts and convert them into architecture narratives, incident stories, security stories, data stories, and cost stories that are grounded in real evidence.",
+          outcomes: [
+            "Month 1: build the landing zone, network, runtime, and storage baselines plus one secure application entry point.",
+            "Month 2: add integration, transactional data, analytics, and one AI-assisted feature to the same system.",
+            "Month 3: finish platform automation, observability, security, cost reporting, and one specialized domain pack or migration scenario."
+          ],
+          deliverables: [
+            "A weekly artifact plan ending each week with a visible result: architecture update, service deployment, dashboard, runbook, or cost report.",
+            "Five interview stories tied to service trade-offs, one incident, one security decision, one cost decision, and one architecture evolution.",
+            "A hiring packet with repo links, diagrams, demo order, resume bullets, and certification alignment notes."
+          ],
+          resources: [
+            ["AWS Ramp-Up Guides", "https://aws.amazon.com/training/ramp-up-guides/"],
+            ["AWS Builder Center", "https://builder.aws.com/"],
+            ["AWS Whitepapers and Guides", "https://aws.amazon.com/whitepapers/"]
+          ]
+        }
+      ]
+    };
+
+    function showPhase(id, button) {
+      document.querySelectorAll('.phase-panel').forEach((panel) => panel.classList.remove('active'));
+      document.querySelectorAll('.ptab').forEach((tab) => tab.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      button.classList.add('active');
+    }
+
+    function toggle(card) {
+      const body = card.querySelector('.card-body');
+      const chev = card.querySelector('.chev');
+      const panel = card.closest('.phase-panel');
+      const isOpen = body.classList.contains('open');
+
+      panel.querySelectorAll('.card-body').forEach((section) => section.classList.remove('open'));
+      panel.querySelectorAll('.chev').forEach((item) => item.classList.remove('open'));
+
+      if (!isOpen) {
+        body.classList.add('open');
+        chev.classList.add('open');
+      }
+    }
+
+    function renderPhase(phaseId, numClass) {
+      const list = document.getElementById(`${phaseId}-list`);
+      DATA[phaseId].forEach((item, index) => {
+        const card = document.createElement('article');
+        card.className = 'card';
+
+        const outcomes = item.outcomes.map((entry) => `<li>${entry}</li>`).join('');
+        const deliverables = item.deliverables.map((entry) => `<li>${entry}</li>`).join('');
+        const chips = item.chips.map((chip) => `<span class="chip">${chip}</span>`).join('');
+        const resources = item.resources
+          .map(([label, url]) => `<a href="${url}" target="_blank" rel="noreferrer">${label}</a>`)
+          .join('');
+
+        card.innerHTML = `
+          <div class="card-header" role="button" tabindex="0" aria-expanded="false">
+            <div class="card-num ${numClass}">${index + 1}</div>
+            <div class="card-main">
+              <h3>${item.title}</h3>
+              <p class="card-subtitle">${item.subtitle}</p>
+              <div class="chip-row">${chips}</div>
+            </div>
+            <div class="chev">▶</div>
+          </div>
+          <div class="card-body">
+            <div class="body-grid">
+              <div class="body-block">
+                <h4>Core Concept</h4>
+                <p>${item.concept}</p>
+                <div class="resource-list">${resources}</div>
+              </div>
+              <div class="body-block">
+                <h4>What You Must Be Able To Do</h4>
+                <ul>${outcomes}</ul>
+              </div>
+            </div>
+            <div class="body-grid">
+              <div class="body-block">
+                <h4>Build Outputs</h4>
+                <ul>${deliverables}</ul>
+              </div>
+              <div class="body-block">
+                <h4>Career Signal</h4>
+                <p>
+                  This card is valuable only if it becomes visible proof. Turn the concepts into running systems, operational notes,
+                  diagrams, dashboards, tests, and deployment evidence that you can show in an interview.
+                </p>
+              </div>
+            </div>
+          </div>`;
+
+        const header = card.querySelector('.card-header');
+        header.addEventListener('click', () => toggle(card));
+        header.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            toggle(card);
+          }
+        });
+
+        list.appendChild(card);
+      });
+    }
+
+    renderPhase('track1', 'track1-num');
+    renderPhase('track2', 'track2-num');
+    renderPhase('track3', 'track3-num');
+    renderPhase('track4', 'track4-num');
+  </script>
+</body>
+</html>

@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Engineering — Fundamentals Learning Path</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --border: #1e1e2e;
+    --accent: #f0c040;
+    --accent2: #5af0b0;
+    --accent3: #c084fc;
+    --text: #e8e8f0;
+    --muted: #6868a0;
+    --stage1: #f0c040;
+    --stage2: #5af0b0;
+    --stage3: #60b0ff;
+    --stage4: #ff8060;
+    --stage5: #c084fc;
+    --stage6: #f06090;
+    --stage7: #40d0d0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(240,192,64,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(240,192,64,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    margin-bottom: 72px;
+    animation: fadeUp 0.7s ease both;
+  }
+
+  .header-label {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-label::before {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 20px;
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .header-sub {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 540px;
+    line-height: 1.7;
+  }
+
+  /* Key advice banner */
+  .advice-banner {
+    background: linear-gradient(135deg, rgba(240,192,64,0.08), rgba(90,240,176,0.05));
+    border: 1px solid rgba(240,192,64,0.25);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin-bottom: 64px;
+    animation: fadeUp 0.7s 0.1s ease both;
+  }
+
+  .advice-banner .label {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .advice-banner p {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  .advice-banner strong {
+    color: var(--accent2);
+  }
+
+  /* Flow diagram */
+  .flow-section {
+    margin-bottom: 64px;
+    animation: fadeUp 0.7s 0.15s ease both;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .flow-diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 24px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    row-gap: 12px;
+  }
+
+  .flow-node {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .flow-badge {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  .flow-arrow {
+    color: var(--muted);
+    font-size: 16px;
+    padding: 0 6px;
+  }
+
+  .flow-break {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 0;
+    gap: 0;
+  }
+
+  .flow-spacer {
+    flex: 1;
+  }
+
+  /* Stages */
+  .stages {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  .stage {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    animation: fadeUp 0.6s ease both;
+    transition: border-color 0.2s;
+  }
+
+  .stage:hover {
+    border-color: rgba(255,255,255,0.1);
+  }
+
+  .stage-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .stage-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    padding: 4px 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .stage-title-group {
+    flex: 1;
+  }
+
+  .stage-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .stage-subtitle {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .stage-toggle {
+    font-size: 18px;
+    color: var(--muted);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .stage.open .stage-toggle {
+    transform: rotate(90deg);
+  }
+
+  .stage-body {
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, padding 0.2s;
+  }
+
+  .stage.open .stage-body {
+    max-height: 1000px;
+    padding: 24px;
+  }
+
+  .concept-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .concept-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .concept-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+
+  .concept-content {}
+
+  .concept-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+
+  .concept-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* Study order */
+  .order-section {
+    margin-top: 56px;
+    animation: fadeUp 0.7s 0.3s ease both;
+  }
+
+  .order-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 24px;
+  }
+
+  .order-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .order-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+  }
+
+  .order-item:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -10px;
+    top: 14px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .order-badge {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 4px;
+    text-align: center;
+    width: 100%;
+  }
+
+  .order-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .order-row2 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    max-width: 75%;
+    margin-left: auto;
+  }
+
+  .order-note {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    line-height: 1.6;
+  }
+
+  .order-note strong {
+    color: var(--accent2);
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 72px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeUp 0.7s 0.4s ease both;
+  }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .stage:nth-child(1) { animation-delay: 0.15s; }
+  .stage:nth-child(2) { animation-delay: 0.2s; }
+  .stage:nth-child(3) { animation-delay: 0.25s; }
+  .stage:nth-child(4) { animation-delay: 0.3s; }
+  .stage:nth-child(5) { animation-delay: 0.35s; }
+  .stage:nth-child(6) { animation-delay: 0.4s; }
+  .stage:nth-child(7) { animation-delay: 0.45s; }
+
+  @media (max-width: 600px) {
+    .order-grid { grid-template-columns: repeat(2, 1fr); }
+    .order-item:nth-child(2)::after { display: none; }
+    .order-row2 { max-width: 100%; grid-template-columns: repeat(2, 1fr); }
+    .flow-diagram { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-label">Concept-First Curriculum</div>
+    <h1>Data Engineering<br><span>Fundamentals</span></h1>
+    <p class="header-sub">A structured learning path focused on core concepts — not tools. Understand the <em>why</em> before the <em>how</em>.</p>
+  </header>
+
+  <!-- Key advice -->
+  <div class="advice-banner">
+    <div class="label">★ Core Mindset</div>
+    <p>For every concept, always ask two questions: <strong>What problem does this solve?</strong> and <strong>What tradeoff does it introduce?</strong> — Data engineering is fundamentally about tradeoffs: speed vs cost, freshness vs reliability, simplicity vs scale.</p>
+  </div>
+
+  <!-- Flow diagram -->
+  <div class="flow-section">
+    <div class="section-title">// Study Flow</div>
+    <div class="flow-diagram">
+      <div class="flow-node">
+        <span class="flow-badge" style="background:rgba(240,192,64,0.15);color:var(--stage1)">Stage 1</span>
+        <span class="flow-arrow">→</span>
+      </div>
+      <div class="flow-node">
+        <span class="flow-badge" style="background:rgba(90,240,176,0.12);color:var(--stage2)">Stage 2</span>
+        <span class="flow-arrow">→</span>
+      </div>
+      <div class="flow-node">
+        <span class="flow-badge" style="background:rgba(96,176,255,0.12);color:var(--stage3)">Stage 3</span>
+        <span class="flow-arrow">→</span>
+      </div>
+      <div class="flow-node">
+        <span class="flow-badge" style="background:rgba(255,128,96,0.12);color:var(--stage4)">Stage 4</span>
+      </div>
+      <div class="flow-spacer"></div>
+      <div style="width:100%;height:1px;"></div>
+      <div style="width:100%;display:flex;align-items:center;justify-content:flex-end;gap:0;margin-top:10px;">
+        <span class="flow-badge" style="background:rgba(64,208,208,0.12);color:var(--stage7)">Stage 7</span>
+        <span class="flow-arrow" style="transform:scaleX(-1)">→</span>
+        <span class="flow-badge" style="background:rgba(240,96,144,0.12);color:var(--stage6)">Stage 6</span>
+        <span class="flow-arrow" style="transform:scaleX(-1)">→</span>
+        <span class="flow-badge" style="background:rgba(192,132,252,0.12);color:var(--stage5)">Stage 5</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stages -->
+  <div class="section-title">// Learning Stages — click to expand</div>
+  <div class="stages" id="stages">
+
+    <!-- Stage 1 -->
+    <div class="stage open" data-stage="1">
+      <div class="stage-header" onclick="toggleStage(this)">
+        <span class="stage-number" style="background:rgba(240,192,64,0.15);color:var(--stage1)">01</span>
+        <div class="stage-title-group">
+          <div class="stage-title">Data Thinking Fundamentals</div>
+          <div class="stage-subtitle">Before touching any tool — understand how data engineers think</div>
+        </div>
+        <span class="stage-toggle">›</span>
+      </div>
+      <div class="stage-body">
+        <div class="concept-list">
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage1)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Data vs Information vs Knowledge</div>
+              <div class="concept-desc">Understanding what raw data actually is and how it transforms into actionable knowledge through processing and context.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage1)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Structured vs Semi-structured vs Unstructured</div>
+              <div class="concept-desc">Why the shape of data fundamentally determines how it must be stored, processed, and queried.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage1)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Batch vs Streaming</div>
+              <div class="concept-desc">The two fundamental processing paradigms — processing bounded data in chunks vs processing unbounded data continuously.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage1)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Data Producer vs Data Consumer</div>
+              <div class="concept-desc">Understanding who creates data and who needs it — data engineers sit in between and serve both sides.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage1)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Data Freshness & Latency</div>
+              <div class="concept-desc">How "old" can data be before it loses business value? The answer drives all pipeline design decisions.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 2 -->
+    <div class="stage" data-stage="2">
+      <div class="stage-header" onclick="toggleStage(this)">
+        <span class="stage-number" style="background:rgba(90,240,176,0.12);color:var(--stage2)">02</span>
+        <div class="stage-title-group">
+          <div class="stage-title">Data Modeling</div>
+          <div class="stage-subtitle">How to organize data so it's useful and queryable</div>
+        </div>
+        <span class="stage-toggle">›</span>
+      </div>
+      <div class="stage-body">
+        <div class="concept-list">
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage2)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Normalization vs Denormalization</div>
+              <div class="concept-desc">Tradeoffs between write efficiency (normalized) and read efficiency (denormalized). A core tension in every modeling decision.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage2)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Relational Modeling</div>
+              <div class="concept-desc">Entities, relationships, primary/foreign keys. The conceptual foundation even for non-relational systems.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage2)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Dimensional Modeling</div>
+              <div class="concept-desc">Star schema, snowflake schema, fact tables, dimension tables. The dominant pattern for analytical data warehouses.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage2)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Slowly Changing Dimensions (SCD)</div>
+              <div class="concept-desc">Types 1, 2, and 3 — strategies for tracking how dimension data changes over time without losing history.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage2)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Data Vault <span style="font-size:10px;color:var(--muted)">(Advanced)</span></div>
+              <div class="concept-desc">Hub-satellite-link modeling for highly auditable, scalable enterprise data warehouses. Learn after mastering dimensional modeling.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 3 -->
+    <div class="stage" data-stage="3">
+      <div class="stage-header" onclick="toggleStage(this)">
+        <span class="stage-number" style="background:rgba(96,176,255,0.12);color:var(--stage3)">03</span>
+        <div class="stage-title-group">
+          <div class="stage-title">Data Pipeline Concepts</div>
+          <div class="stage-subtitle">How data moves from source to destination reliably</div>
+        </div>
+        <span class="stage-toggle">›</span>
+      </div>
+      <div class="stage-body">
+        <div class="concept-list">
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage3)"></div>
+            <div class="concept-content">
+              <div class="concept-name">ETL vs ELT</div>
+              <div class="concept-desc">Extract-Transform-Load vs Extract-Load-Transform. The order of operations changes who does the transformation work and why it matters at scale.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage3)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Idempotency</div>
+              <div class="concept-desc">Running a pipeline twice should produce the same result. One of the most critical correctness properties for any data pipeline.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage3)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Incremental vs Full Load</div>
+              <div class="concept-desc">Only processing new/changed data vs reprocessing everything. Incremental is efficient but complex; full loads are simple but expensive.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage3)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Backfilling</div>
+              <div class="concept-desc">Reprocessing historical data when logic changes. A day-1 consideration when designing pipeline architecture.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage3)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Data Lineage</div>
+              <div class="concept-desc">Tracking where data came from and how it was transformed — critical for debugging, compliance, and trust.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage3)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Late-Arriving Data</div>
+              <div class="concept-desc">Handling data that shows up after it was expected. Common in event streams and IoT systems; requires watermarking and reprocessing strategies.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 4 -->
+    <div class="stage" data-stage="4">
+      <div class="stage-header" onclick="toggleStage(this)">
+        <span class="stage-number" style="background:rgba(255,128,96,0.12);color:var(--stage4)">04</span>
+        <div class="stage-title-group">
+          <div class="stage-title">Storage Concepts</div>
+          <div class="stage-subtitle">Where and how data lives — physically and logically</div>
+        </div>
+        <span class="stage-toggle">›</span>
+      </div>
+      <div class="stage-body">
+        <div class="concept-list">
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage4)"></div>
+            <div class="concept-content">
+              <div class="concept-name">OLTP vs OLAP</div>
+              <div class="concept-desc">Transactional (app) systems vs analytical systems. Fundamentally different design goals, read/write patterns, and scaling strategies.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage4)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Data Warehouse</div>
+              <div class="concept-desc">Centralized, structured, schema-enforced storage optimized for analytical queries at scale.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage4)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Data Lake</div>
+              <div class="concept-desc">Raw storage of any data type, any format, at any scale. Schema-on-read instead of schema-on-write.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage4)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Data Lakehouse</div>
+              <div class="concept-desc">Hybrid architecture combining lake flexibility with warehouse performance. The dominant modern pattern.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage4)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Partitioning</div>
+              <div class="concept-desc">Splitting data physically to enable query pruning — reads only the relevant partitions instead of full scans.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage4)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Columnar vs Row Storage</div>
+              <div class="concept-desc">Why columnar formats (Parquet, ORC) are dramatically faster for analytical queries but slower for record-level writes.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage4)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Compression & Encoding</div>
+              <div class="concept-desc">How data is physically stored efficiently — dictionary encoding, run-length encoding, and why they matter for both cost and speed.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 5 -->
+    <div class="stage" data-stage="5">
+      <div class="stage-header" onclick="toggleStage(this)">
+        <span class="stage-number" style="background:rgba(192,132,252,0.12);color:var(--stage5)">05</span>
+        <div class="stage-title-group">
+          <div class="stage-title">Data Quality & Reliability</div>
+          <div class="stage-subtitle">Making data trustworthy — treating pipelines as production systems</div>
+        </div>
+        <span class="stage-toggle">›</span>
+      </div>
+      <div class="stage-body">
+        <div class="concept-list">
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage5)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Data Quality Dimensions</div>
+              <div class="concept-desc">Completeness, accuracy, consistency, timeliness, uniqueness — the five axes on which data quality is measured.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage5)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Schema Evolution</div>
+              <div class="concept-desc">What happens when data structure changes over time — adding columns, changing types, removing fields — without breaking downstream consumers.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage5)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Data Contracts</div>
+              <div class="concept-desc">Formal agreements between data producers and consumers on schema, SLAs, and expected data behavior.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage5)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Idempotency & Exactly-Once Semantics</div>
+              <div class="concept-desc">Guaranteeing no duplicates and no data loss — the hardest problem in distributed pipeline design.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage5)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Monitoring & Alerting on Data</div>
+              <div class="concept-desc">Treating pipelines like production software — detecting anomalies, schema drift, row count drops, and null rate spikes.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 6 -->
+    <div class="stage" data-stage="6">
+      <div class="stage-header" onclick="toggleStage(this)">
+        <span class="stage-number" style="background:rgba(240,96,144,0.12);color:var(--stage6)">06</span>
+        <div class="stage-title-group">
+          <div class="stage-title">Distributed Computing Concepts</div>
+          <div class="stage-subtitle">Processing data at scale — beyond a single machine</div>
+        </div>
+        <span class="stage-toggle">›</span>
+      </div>
+      <div class="stage-body">
+        <div class="concept-list">
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage6)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Why Distributed Computing?</div>
+              <div class="concept-desc">Understanding single-machine limits — memory, CPU, and I/O ceilings — and why distributing work across nodes solves them.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage6)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Horizontal vs Vertical Scaling</div>
+              <div class="concept-desc">Adding more machines vs upgrading existing ones. Data systems almost always scale horizontally by design.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage6)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Partitioning & Sharding</div>
+              <div class="concept-desc">Splitting data across nodes by key, range, or hash. The choice of partition key is one of the most consequential design decisions.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage6)"></div>
+            <div class="concept-content">
+              <div class="concept-name">MapReduce Paradigm</div>
+              <div class="concept-desc">The foundational concept behind big data processing — split, process locally, then aggregate. Everything traces back to this model.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage6)"></div>
+            <div class="concept-content">
+              <div class="concept-name">DAG — Directed Acyclic Graph</div>
+              <div class="concept-desc">How pipelines and distributed computation are structured as dependency graphs — the backbone of every modern orchestration system.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage6)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Fault Tolerance & Retries</div>
+              <div class="concept-desc">What happens when a node fails mid-pipeline — checkpointing, speculative execution, and idempotent task design.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stage 7 -->
+    <div class="stage" data-stage="7">
+      <div class="stage-header" onclick="toggleStage(this)">
+        <span class="stage-number" style="background:rgba(64,208,208,0.12);color:var(--stage7)">07</span>
+        <div class="stage-title-group">
+          <div class="stage-title">Data Architecture Patterns</div>
+          <div class="stage-subtitle">Putting it all together at system level</div>
+        </div>
+        <span class="stage-toggle">›</span>
+      </div>
+      <div class="stage-body">
+        <div class="concept-list">
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage7)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Lambda Architecture</div>
+              <div class="concept-desc">Combining a batch layer (accurate, slow) and a speed layer (approximate, fast) to serve both historical and real-time queries.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage7)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Kappa Architecture</div>
+              <div class="concept-desc">Stream-only simplification of Lambda — process everything as a stream, including historical reprocessing.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage7)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Medallion Architecture</div>
+              <div class="concept-desc">Bronze (raw) → Silver (cleaned) → Gold (business-ready) data layers. The most adopted modern lakehouse pattern.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage7)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Event-Driven Architecture</div>
+              <div class="concept-desc">How systems communicate through events rather than direct calls — the backbone of real-time data platforms.</div>
+            </div>
+          </div>
+          <div class="concept-item">
+            <div class="concept-dot" style="background:var(--stage7)"></div>
+            <div class="concept-content">
+              <div class="concept-name">Data Mesh</div>
+              <div class="concept-desc">Decentralized, domain-owned data with federated governance. A cultural and organizational shift as much as a technical one.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /stages -->
+
+  <!-- Study order -->
+  <div class="order-section">
+    <div class="section-title">// Recommended Study Order</div>
+    <div class="order-box">
+      <div class="order-grid">
+        <div class="order-item">
+          <div class="order-badge" style="background:rgba(240,192,64,0.15);color:var(--stage1)">Stage 1</div>
+          <div class="order-label">Data Thinking</div>
+        </div>
+        <div class="order-item">
+          <div class="order-badge" style="background:rgba(90,240,176,0.12);color:var(--stage2)">Stage 2</div>
+          <div class="order-label">Data Modeling</div>
+        </div>
+        <div class="order-item">
+          <div class="order-badge" style="background:rgba(96,176,255,0.12);color:var(--stage3)">Stage 3</div>
+          <div class="order-label">Pipelines</div>
+        </div>
+        <div class="order-item" style="position:relative;">
+          <div class="order-badge" style="background:rgba(255,128,96,0.12);color:var(--stage4)">Stage 4</div>
+          <div class="order-label">Storage</div>
+        </div>
+      </div>
+      <div class="order-row2">
+        <div class="order-item">
+          <div class="order-badge" style="background:rgba(192,132,252,0.12);color:var(--stage5)">Stage 5</div>
+          <div class="order-label">Quality</div>
+        </div>
+        <div class="order-item">
+          <div class="order-badge" style="background:rgba(240,96,144,0.12);color:var(--stage6)">Stage 6</div>
+          <div class="order-label">Distributed</div>
+        </div>
+        <div class="order-item" style="position:relative;">
+          <div class="order-badge" style="background:rgba(64,208,208,0.12);color:var(--stage7)">Stage 7</div>
+          <div class="order-label">Architecture</div>
+        </div>
+      </div>
+      <div class="order-note">
+        <strong>Tip:</strong> Start stages 1–4 linearly, then loop back after each later stage — understanding storage makes pipelines clearer, and architecture patterns only fully click once you understand the problems they solve. Each loop deepens prior stages.
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <span>Data Engineering — Fundamentals Path</span>
+    <span>7 Stages · Concept-First</span>
+  </footer>
+
+</div>
+
+<script>
+  function toggleStage(headerEl) {
+    const stage = headerEl.closest('.stage');
+    stage.classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>
