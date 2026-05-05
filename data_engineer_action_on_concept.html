@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Engineering — Hands-On Project Path</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --paper: #faf7f2;
+    --ink: #1a1410;
+    --muted: #7a6e60;
+    --border: #d4c9b8;
+    --aws: #ff9900;
+    --aws-bg: #fff8ee;
+    --aws-border: #ffdda0;
+    --aws-dark: #7a4800;
+    --gcp: #1a73e8;
+    --gcp-bg: #eef4ff;
+    --gcp-border: #b0ccf8;
+    --gcp-dark: #0d3a7a;
+    --p1: #c1440e;
+    --p2: #2d6a4f;
+    --p3: #1a3a6b;
+    --p4: #7b2d8b;
+    --p5: #b5450a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='none'/%3E%3Ccircle cx='1' cy='1' r='0.5' fill='%23b0a090' opacity='0.3'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+  }
+
+  .container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 64px 24px 120px;
+    position: relative; z-index: 1;
+  }
+
+  /* ─── HEADER ─── */
+  .header {
+    border-bottom: 3px solid var(--ink);
+    padding-bottom: 32px; margin-bottom: 48px;
+    animation: fadeIn 0.6s ease both;
+  }
+
+  .masthead {
+    display: flex; justify-content: space-between;
+    align-items: flex-start; margin-bottom: 20px;
+    flex-wrap: wrap; gap: 12px;
+  }
+
+  .issue-tag {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted); border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 2px;
+  }
+
+  .date-tag { font-size: 10px; letter-spacing: 0.1em; color: var(--muted); }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(38px, 6.5vw, 80px);
+    font-weight: 900; line-height: 0.95;
+    letter-spacing: -0.02em; margin-bottom: 20px;
+  }
+
+  h1 em { font-style: italic; color: var(--p1); }
+
+  .header-deck {
+    font-size: 13px; color: var(--muted);
+    max-width: 600px; line-height: 1.7;
+    border-left: 3px solid var(--p1);
+    padding-left: 14px; margin-bottom: 24px;
+  }
+
+  .cloud-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .cloud-pill {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border-radius: 3px;
+    font-size: 12px; font-weight: 500; border: 1px solid;
+  }
+
+  .cloud-pill.aws { background: var(--aws-bg); border-color: var(--aws-border); color: var(--aws-dark); }
+  .cloud-pill.gcp { background: var(--gcp-bg); border-color: var(--gcp-border); color: var(--gcp-dark); }
+  .cloud-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .aws-dot { background: var(--aws); }
+  .gcp-dot { background: var(--gcp); }
+
+  /* ─── SECTION LABEL ─── */
+  .section-label {
+    font-size: 9px; letter-spacing: 0.35em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .section-label::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* ─── SERVICE MAP ─── */
+  .service-map { margin-bottom: 56px; animation: fadeIn 0.6s 0.1s ease both; }
+
+  .service-table {
+    width: 100%; border-collapse: collapse;
+    border: 1px solid var(--border); font-size: 11px;
+  }
+
+  .service-table th {
+    padding: 10px 14px; font-size: 10px;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    font-weight: 500; text-align: left;
+  }
+
+  .service-table th.cat { background: var(--ink); color: var(--bg); }
+  .service-table th.aws-col { background: var(--aws-bg); color: var(--aws-dark); border-bottom: 2px solid var(--aws); }
+  .service-table th.gcp-col { background: var(--gcp-bg); color: var(--gcp-dark); border-bottom: 2px solid var(--gcp); }
+
+  .service-table td {
+    padding: 9px 14px; border-top: 1px solid var(--border); vertical-align: middle;
+  }
+
+  .service-table tr:nth-child(even) td { background: rgba(0,0,0,0.015); }
+
+  .service-table td.cat-label {
+    font-weight: 500; color: var(--muted); font-size: 10px;
+    letter-spacing: 0.1em; white-space: nowrap;
+    border-right: 1px solid var(--border);
+  }
+
+  .svc {
+    display: inline-block; font-size: 10px; font-weight: 500;
+    padding: 2px 8px; border-radius: 2px; margin: 1px 2px 1px 0;
+  }
+
+  .svc.aws { background: var(--aws-bg); color: var(--aws-dark); border: 1px solid var(--aws-border); }
+  .svc.gcp { background: var(--gcp-bg); color: var(--gcp-dark); border: 1px solid var(--gcp-border); }
+
+  .diff-note { font-size: 10px; color: var(--muted); font-style: italic; margin-top: 3px; display: block; }
+
+  /* ─── PROJECTS ─── */
+  .projects { display: flex; flex-direction: column; gap: 48px; }
+
+  .project {
+    background: var(--paper); border: 1px solid var(--border);
+    position: relative; overflow: hidden;
+    animation: fadeIn 0.6s ease both;
+  }
+
+  .project::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; width: 4px; height: 100%;
+  }
+
+  .project:nth-child(1)::before { background: var(--p1); }
+  .project:nth-child(2)::before { background: var(--p2); }
+  .project:nth-child(3)::before { background: var(--p3); }
+  .project:nth-child(4)::before { background: var(--p4); }
+  .project:nth-child(5)::before { background: var(--p5); }
+  .project:nth-child(1) { animation-delay: 0.1s; }
+  .project:nth-child(2) { animation-delay: 0.15s; }
+  .project:nth-child(3) { animation-delay: 0.2s; }
+  .project:nth-child(4) { animation-delay: 0.25s; }
+  .project:nth-child(5) { animation-delay: 0.3s; }
+
+  .project-header {
+    padding: 22px 28px 20px 32px; border-bottom: 1px solid var(--border);
+    display: grid; grid-template-columns: 1fr auto; gap: 16px;
+    align-items: start; cursor: pointer; user-select: none;
+  }
+
+  .project-header:hover { background: rgba(0,0,0,0.015); }
+
+  .project-number { font-size: 10px; letter-spacing: 0.2em; color: var(--muted); margin-bottom: 5px; }
+
+  .project-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(19px, 2.8vw, 25px);
+    font-weight: 800; line-height: 1.15; margin-bottom: 8px;
+  }
+
+  .project-tagline { font-size: 12px; color: var(--muted); line-height: 1.6; max-width: 500px; }
+
+  .project-meta { text-align: right; flex-shrink: 0; }
+
+  .difficulty-badge {
+    font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 2px; margin-bottom: 8px; display: inline-block;
+  }
+
+  .diff-starter { background: #d4edda; color: #1a5c2a; }
+  .diff-intermediate { background: #fff3cd; color: #7a5000; }
+  .diff-advanced { background: #f8d7da; color: #7a0010; }
+  .diff-capstone { background: var(--ink); color: var(--bg); }
+
+  .duration { font-size: 10px; color: var(--muted); display: block; margin-bottom: 6px; }
+  .toggle-btn { font-size: 20px; color: var(--muted); transition: transform 0.25s; cursor: pointer; }
+  .project.open .toggle-btn { transform: rotate(90deg); }
+
+  .project-body { max-height: 0; overflow: hidden; transition: max-height 0.45s ease; }
+  .project.open .project-body { max-height: 4000px; }
+
+  .project-inner { padding: 28px 32px; display: flex; flex-direction: column; gap: 24px; }
+
+  .concept-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .concept-tag {
+    font-size: 10px; padding: 3px 9px;
+    border: 1px solid var(--border); border-radius: 2px;
+    color: var(--muted); background: var(--bg);
+  }
+
+  .section-title-sm {
+    font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 10px; padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .task-list { display: flex; flex-direction: column; gap: 9px; }
+  .task-item { display: flex; gap: 10px; align-items: flex-start; }
+  .task-num { font-size: 10px; color: var(--muted); flex-shrink: 0; margin-top: 1px; font-weight: 500; }
+  .task-text { font-size: 12px; line-height: 1.6; }
+  .task-text strong { font-weight: 500; }
+
+  /* ─── DUAL CLOUD PANEL ─── */
+  .dual-cloud {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0; border: 1px solid var(--border);
+    border-radius: 3px; overflow: hidden;
+  }
+
+  .cloud-panel { padding: 20px; }
+
+  .cloud-panel.aws-panel { background: var(--aws-bg); border-right: 1px solid var(--aws-border); }
+  .cloud-panel.gcp-panel { background: var(--gcp-bg); }
+
+  .cloud-panel-header {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 14px; padding-bottom: 10px;
+  }
+
+  .cloud-panel-header.aws-header { border-bottom: 2px solid var(--aws); }
+  .cloud-panel-header.gcp-header { border-bottom: 2px solid var(--gcp); }
+
+  .cloud-logo { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; }
+  .cloud-logo.aws { color: var(--aws-dark); }
+  .cloud-logo.gcp { color: var(--gcp-dark); }
+
+  .cloud-service-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .cloud-service-item { display: flex; gap: 8px; align-items: flex-start; }
+
+  .cs-name {
+    font-size: 10px; font-weight: 500; flex-shrink: 0;
+    padding: 2px 8px; border-radius: 2px; min-width: 100px; text-align: center;
+  }
+
+  .cs-name.aws { background: rgba(255,153,0,0.15); color: var(--aws-dark); }
+  .cs-name.gcp { background: rgba(26,115,232,0.15); color: var(--gcp-dark); }
+
+  .cs-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+  /* ─── COMPARE BOX ─── */
+  .compare-box {
+    background: var(--ink); color: var(--bg);
+    padding: 16px 20px; border-radius: 3px;
+    font-size: 12px; line-height: 1.65;
+  }
+
+  .compare-box .label {
+    font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: #888; margin-bottom: 8px;
+  }
+
+  .compare-box .aws-t { color: var(--aws); font-weight: 500; }
+  .compare-box .gcp-t { color: #7ab8ff; font-weight: 500; }
+
+  /* ─── ARCH GRID ─── */
+  .arch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .arch-box {
+    padding: 14px 16px; font-size: 10px; color: var(--muted);
+    line-height: 1.9; font-family: 'IBM Plex Mono', monospace;
+    white-space: pre; overflow-x: auto;
+    border-radius: 3px; border: 1px solid;
+  }
+
+  .arch-box.aws { background: var(--aws-bg); border-color: var(--aws-border); }
+  .arch-box.gcp { background: var(--gcp-bg); border-color: var(--gcp-border); }
+
+  .arch-box .arch-title {
+    font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+    font-weight: 700; margin-bottom: 8px; display: block;
+  }
+
+  .arch-box.aws .arch-title { color: var(--aws-dark); }
+  .arch-box.gcp .arch-title { color: var(--gcp-dark); }
+
+  /* ─── CHALLENGE ─── */
+  .challenge-box {
+    background: var(--ink); color: var(--bg);
+    padding: 16px 20px; border-radius: 3px;
+    font-size: 12px; line-height: 1.65;
+  }
+
+  .challenge-box .label {
+    font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: #888; margin-bottom: 8px;
+  }
+
+  /* ─── CAREER NOTE ─── */
+  .career-note {
+    margin-top: 64px; border-top: 3px solid var(--ink);
+    padding-top: 32px; animation: fadeIn 0.6s 0.4s ease both;
+  }
+
+  .career-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); margin-top: 24px;
+  }
+
+  .career-cell { background: var(--paper); padding: 20px 18px; }
+
+  .career-cell-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px; font-weight: 700; margin-bottom: 8px;
+  }
+
+  .career-cell-body { font-size: 11px; color: var(--muted); line-height: 1.7; }
+
+  .footer {
+    margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: var(--muted);
+    animation: fadeIn 0.6s 0.5s ease both;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 680px) {
+    .dual-cloud { grid-template-columns: 1fr; }
+    .cloud-panel.aws-panel { border-right: none; border-bottom: 1px solid var(--aws-border); }
+    .arch-grid { grid-template-columns: 1fr; }
+    .career-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="masthead">
+      <span class="issue-tag">Vol. 2 — Dual-Cloud Track</span>
+      <span class="date-tag">AWS · GCP · Thailand Tech 2026</span>
+    </div>
+    <h1>From Concept<br>to <em>Production</em></h1>
+    <p class="header-deck">
+      Five progressive projects applying every data engineering fundamental — built on both AWS and GCP so you can compare both platforms side by side and develop real, informed opinions about their tradeoffs.
+    </p>
+    <div class="cloud-pills">
+      <div class="cloud-pill aws">
+        <div class="cloud-dot aws-dot"></div>
+        Amazon Web Services — S3, Glue, Redshift, Kinesis, EMR, Athena
+      </div>
+      <div class="cloud-pill gcp">
+        <div class="cloud-dot gcp-dot"></div>
+        Google Cloud Platform — GCS, BigQuery, Dataflow, Pub/Sub, Dataproc
+      </div>
+    </div>
+  </header>
+
+  <!-- SERVICE MAP -->
+  <div class="service-map">
+    <div class="section-label">Cloud Service Equivalence Map — Reference Throughout All Projects</div>
+    <table class="service-table">
+      <thead>
+        <tr>
+          <th class="cat">Category</th>
+          <th class="aws-col">AWS Service</th>
+          <th class="gcp-col">GCP Service</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="cat-label">Object Storage</td>
+          <td><span class="svc aws">S3</span><span class="diff-note">Buckets, prefixes, lifecycle rules, storage tiers</span></td>
+          <td><span class="svc gcp">GCS</span><span class="diff-note">Buckets, object classes, IAM-native access model</span></td>
+        </tr>
+        <tr>
+          <td class="cat-label">Data Warehouse</td>
+          <td><span class="svc aws">Redshift</span><span class="diff-note">Cluster-based, needs VACUUM, WLM tuning, sort/dist keys</span></td>
+          <td><span class="svc gcp">BigQuery</span><span class="diff-note">Fully serverless, auto-scaled, pay-per-TB-scanned</span></td>
+        </tr>
+        <tr>
+          <td class="cat-label">Managed ETL</td>
+          <td><span class="svc aws">AWS Glue</span><span class="diff-note">Spark-based, visual + code jobs, Data Catalog</span></td>
+          <td><span class="svc gcp">Dataflow</span><span class="diff-note">Apache Beam runner, scales to zero, stream + batch unified</span></td>
+        </tr>
+        <tr>
+          <td class="cat-label">Spark Cluster</td>
+          <td><span class="svc aws">EMR</span><span class="diff-note">EC2-based, full Hadoop ecosystem, spot support, slow startup</span></td>
+          <td><span class="svc gcp">Dataproc</span><span class="diff-note">Managed Spark/Hadoop, fast ~90s startup, GCS-native</span></td>
+        </tr>
+        <tr>
+          <td class="cat-label">Message Streaming</td>
+          <td><span class="svc aws">Kinesis</span><span class="diff-note">Shard-based, ordered per shard, 7-day max retention</span></td>
+          <td><span class="svc gcp">Pub/Sub</span><span class="diff-note">Serverless global bus, push+pull, ~100ms latency, no shard mgmt</span></td>
+        </tr>
+        <tr>
+          <td class="cat-label">Serverless SQL</td>
+          <td><span class="svc aws">Athena</span><span class="diff-note">Query S3 with SQL, pay-per-TB scanned, separate from Redshift</span></td>
+          <td><span class="svc gcp">BigQuery</span><span class="diff-note">One service handles both DWH and ad-hoc querying</span></td>
+        </tr>
+        <tr>
+          <td class="cat-label">Orchestration</td>
+          <td><span class="svc aws">MWAA</span><span class="diff-note">Managed Airflow — DAGs stored in S3, VPC-based</span></td>
+          <td><span class="svc gcp">Cloud Composer</span><span class="diff-note">Managed Airflow — DAGs in GCS, GKE-backed environment</span></td>
+        </tr>
+        <tr>
+          <td class="cat-label">CDC / Replication</td>
+          <td><span class="svc aws">DMS + MSK</span><span class="diff-note">Database Migration Service + Managed Kafka for CDC</span></td>
+          <td><span class="svc gcp">Datastream</span><span class="diff-note">CDC-native serverless service, schema-aware, direct BQ sink</span></td>
+        </tr>
+        <tr>
+          <td class="cat-label">Data Governance</td>
+          <td><span class="svc aws">Lake Formation</span><span class="diff-note">Table/column-level permissions over S3 data lake</span></td>
+          <td><span class="svc gcp">Dataplex</span><span class="diff-note">Governance + DQ + lineage in one service, BigQuery-native</span></td>
+        </tr>
+        <tr>
+          <td class="cat-label">IaC</td>
+          <td><span class="svc aws">CDK / CFN</span><span class="diff-note">AWS-native; Terraform is the cross-cloud standard for both</span></td>
+          <td><span class="svc gcp">Terraform / DM</span><span class="diff-note">Terraform works identically on both — use this for all projects</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="font-size:10px;color:var(--muted);margin-top:10px;">
+      ★ Build the same pipeline logic on both clouds in every project, then note where each cloud forced a different design decision.
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="section-label">Project Path — Click Any Project to Expand</div>
+  <div class="projects">
+
+    <!-- PROJECT 1 -->
+    <div class="project open">
+      <div class="project-header" onclick="toggle(this)">
+        <div>
+          <div class="project-number">Project 01 / 05</div>
+          <div class="project-title">Bangkok E-Commerce Batch Pipeline</div>
+          <div class="project-tagline">Build a full ELT pipeline: raw orders → cleaned warehouse → star schema. Build on both AWS and GCP and compare the developer experience.</div>
+        </div>
+        <div class="project-meta">
+          <span class="difficulty-badge diff-starter">Starter</span>
+          <span class="duration">3–4 weeks</span>
+          <div class="toggle-btn">›</div>
+        </div>
+      </div>
+      <div class="project-body">
+        <div class="project-inner">
+
+          <div>
+            <div class="section-title-sm">Concepts Applied</div>
+            <div class="concept-tags">
+              <span class="concept-tag">ETL vs ELT</span>
+              <span class="concept-tag">Dimensional Modeling</span>
+              <span class="concept-tag">Star Schema</span>
+              <span class="concept-tag">Incremental Load</span>
+              <span class="concept-tag">Idempotency</span>
+              <span class="concept-tag">Partitioning</span>
+              <span class="concept-tag">OLAP vs OLTP</span>
+              <span class="concept-tag">SCD Type 2</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-title-sm">Build Tasks — Same Logic, Both Clouds</div>
+            <div class="task-list">
+              <div class="task-item"><span class="task-num">01.</span><span class="task-text"><strong>Generate synthetic data</strong> — orders, products, customers, payments (simulate Lazada/Shopee schema in Python)</span></div>
+              <div class="task-item"><span class="task-num">02.</span><span class="task-text"><strong>Land raw files</strong> into object storage as your Bronze layer (CSV/Parquet)</span></div>
+              <div class="task-item"><span class="task-num">03.</span><span class="task-text"><strong>Build dbt models</strong> — Silver (clean, typed) then Gold (fact_orders, dim_product, dim_customer star schema)</span></div>
+              <div class="task-item"><span class="task-num">04.</span><span class="task-text"><strong>Implement SCD Type 2</strong> on dim_customer to track address/tier changes over time</span></div>
+              <div class="task-item"><span class="task-num">05.</span><span class="task-text"><strong>Orchestrate with Airflow</strong> — daily DAG, full load first run, incremental every run after</span></div>
+              <div class="task-item"><span class="task-num">06.</span><span class="task-text"><strong>Build a dashboard</strong> — daily GMV, top products, regional breakdown (Metabase or Looker Studio)</span></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-title-sm">Cloud Services Side-by-Side</div>
+            <div class="dual-cloud">
+              <div class="cloud-panel aws-panel">
+                <div class="cloud-panel-header aws-header">
+                  <div class="cloud-dot aws-dot"></div>
+                  <span class="cloud-logo aws">AWS Stack</span>
+                </div>
+                <div class="cloud-service-list">
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">S3</span>
+                    <span class="cs-desc">Bronze — raw files partitioned by date prefix</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">Glue Crawler</span>
+                    <span class="cs-desc">Auto-crawl S3 → populate Glue Data Catalog with schema</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">Athena</span>
+                    <span class="cs-desc">Ad-hoc SQL on Bronze without loading to Redshift</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">Redshift</span>
+                    <span class="cs-desc">Silver + Gold via dbt; COPY from S3 for bulk ingest</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">MWAA</span>
+                    <span class="cs-desc">Managed Airflow — DAGs stored in S3, runs in your VPC</span>
+                  </div>
+                </div>
+              </div>
+              <div class="cloud-panel gcp-panel">
+                <div class="cloud-panel-header gcp-header">
+                  <div class="cloud-dot gcp-dot"></div>
+                  <span class="cloud-logo gcp">GCP Stack</span>
+                </div>
+                <div class="cloud-service-list">
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">GCS</span>
+                    <span class="cs-desc">Bronze — same structure, different storage class options than S3</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">BQ Ext. Tables</span>
+                    <span class="cs-desc">Query GCS files from BigQuery — no COPY or crawler needed</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">BigQuery</span>
+                    <span class="cs-desc">Silver + Gold AND ad-hoc — one service replaces both Redshift + Athena</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">dbt Core</span>
+                    <span class="cs-desc">Same dbt models — just swap profiles.yml to BigQuery adapter</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">Cloud Composer</span>
+                    <span class="cs-desc">Managed Airflow — DAGs in GCS, GKE-backed environment</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arch-grid">
+            <div class="arch-box aws"><span class="arch-title">AWS Architecture</span>CSV/API
+  → S3 (Bronze)
+  → Glue Crawler → Catalog
+  → Athena (ad-hoc)
+  → Redshift COPY
+  → dbt Silver / Gold
+  → QuickSight / Metabase</div>
+            <div class="arch-box gcp"><span class="arch-title">GCP Architecture</span>CSV/API
+  → GCS (Bronze)
+  → BQ External Tables
+  → BigQuery Silver / Gold
+  → dbt models
+  → Looker Studio / Metabase</div>
+          </div>
+
+          <div class="compare-box">
+            <div class="label">⚖ Key Comparison After Building</div>
+            <span class="aws-t">Redshift</span> requires cluster management, VACUUM/ANALYZE maintenance, and WLM queue config. Query performance depends heavily on sort/distribution keys you choose upfront. <span class="gcp-t">BigQuery</span> is fully serverless — no cluster, no keys, but you pay per TB scanned. Ask: which matters more for a startup — operational simplicity or cost predictability at 100TB scale? Write your answer down as your first ADR.
+          </div>
+
+          <div class="challenge-box">
+            <div class="label">★ Challenge Extension</div>
+            Simulate a bug where the pipeline used the wrong THB→USD exchange rate for 3 days. Write a <strong>backfill script</strong> that reprocesses only affected date partitions — on both S3/Redshift and GCS/BigQuery. Observe how each cloud handles partial partition overwrites. This forces real understanding of idempotency in both environments.
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT 2 -->
+    <div class="project">
+      <div class="project-header" onclick="toggle(this)">
+        <div>
+          <div class="project-number">Project 02 / 05</div>
+          <div class="project-title">Data Quality Guardian System</div>
+          <div class="project-tagline">Wrap Project 1 with a full quality and observability layer. Make pipelines trustworthy, not just functional — compare native DQ tools on each cloud.</div>
+        </div>
+        <div class="project-meta">
+          <span class="difficulty-badge diff-intermediate">Intermediate</span>
+          <span class="duration">2–3 weeks</span>
+          <div class="toggle-btn">›</div>
+        </div>
+      </div>
+      <div class="project-body">
+        <div class="project-inner">
+
+          <div>
+            <div class="section-title-sm">Concepts Applied</div>
+            <div class="concept-tags">
+              <span class="concept-tag">Data Quality Dimensions</span>
+              <span class="concept-tag">Schema Evolution</span>
+              <span class="concept-tag">Data Contracts</span>
+              <span class="concept-tag">Monitoring & Alerting</span>
+              <span class="concept-tag">Data Lineage</span>
+              <span class="concept-tag">Freshness SLA</span>
+              <span class="concept-tag">PDPA Compliance</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-title-sm">Build Tasks</div>
+            <div class="task-list">
+              <div class="task-item"><span class="task-num">01.</span><span class="task-text"><strong>Define data contracts</strong> — YAML schemas specifying expected columns, types, nullability, and row count ranges per table</span></div>
+              <div class="task-item"><span class="task-num">02.</span><span class="task-text"><strong>Add Great Expectations</strong> — completeness, uniqueness, and value-range checks on Silver and Gold layers</span></div>
+              <div class="task-item"><span class="task-num">03.</span><span class="task-text"><strong>Simulate a schema break</strong> — drop a column upstream; watch contracts catch it before Gold is polluted</span></div>
+              <div class="task-item"><span class="task-num">04.</span><span class="task-text"><strong>Build a freshness monitor</strong> — alert if Gold tables haven't refreshed within SLA (e.g., >26 hours)</span></div>
+              <div class="task-item"><span class="task-num">05.</span><span class="task-text"><strong>Add dbt tests + dbt docs</strong> — not_null, unique, relationship tests on every model; publish lineage graph</span></div>
+              <div class="task-item"><span class="task-num">06.</span><span class="task-text"><strong>Build quality dashboard</strong> — pass/fail rate over time, which checks broke and when</span></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-title-sm">Cloud-Native Quality Tools</div>
+            <div class="dual-cloud">
+              <div class="cloud-panel aws-panel">
+                <div class="cloud-panel-header aws-header">
+                  <div class="cloud-dot aws-dot"></div>
+                  <span class="cloud-logo aws">AWS Quality Stack</span>
+                </div>
+                <div class="cloud-service-list">
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">Glue DQ</span>
+                    <span class="cs-desc">Native rule-based checks on Glue jobs using DQDL language</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">CloudWatch</span>
+                    <span class="cs-desc">Pipeline metrics, custom alarms, SNS → Slack notifications</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">Lambda</span>
+                    <span class="cs-desc">Trigger freshness check on S3 object-created event</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">Comprehend</span>
+                    <span class="cs-desc">PII detection service — detect Thai IDs in text columns</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">Great Expectations</span>
+                    <span class="cs-desc">Custom checks — store Data Docs results to S3</span>
+                  </div>
+                </div>
+              </div>
+              <div class="cloud-panel gcp-panel">
+                <div class="cloud-panel-header gcp-header">
+                  <div class="cloud-dot gcp-dot"></div>
+                  <span class="cloud-logo gcp">GCP Quality Stack</span>
+                </div>
+                <div class="cloud-service-list">
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">Dataplex DQ</span>
+                    <span class="cs-desc">Native DQ rules inside GCP's governance layer — BigQuery-integrated</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">Cloud Monitoring</span>
+                    <span class="cs-desc">Metrics + alerts — connects to PagerDuty, Slack via webhooks</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">Cloud Functions</span>
+                    <span class="cs-desc">Trigger freshness check on GCS object-finalize event</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">Cloud DLP</span>
+                    <span class="cs-desc">PII detection — detects Thai IDs, passport numbers, sensitive patterns</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">Great Expectations</span>
+                    <span class="cs-desc">Same library — store Data Docs results to GCS</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="compare-box">
+            <div class="label">⚖ Key Comparison After Building</div>
+            <span class="aws-t">Glue DQ</span> uses a declarative DQDL language — tight coupling to Glue jobs makes it easy inside that ecosystem but awkward outside. <span class="gcp-t">Dataplex</span> is governance-first with DQ as a feature — better integration with BigQuery lineage, tagging, and catalog. Also compare PII detection: <span class="aws-t">Comprehend</span> vs <span class="gcp-t">Cloud DLP</span> — which catches more Thai-specific patterns (ID card numbers, phone formats)?
+          </div>
+
+          <div class="challenge-box">
+            <div class="label">★ Challenge Extension</div>
+            Simulate a PDPA scenario: an upstream system accidentally sends Thai national ID numbers in a free-text column. Write a detection rule that flags PII before data lands in Gold — on both clouds (Lambda + Comprehend on AWS vs Cloud Functions + Cloud DLP on GCP). Which is easier to configure and which catches more patterns? Document the comparison as an ADR.
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT 3 -->
+    <div class="project">
+      <div class="project-header" onclick="toggle(this)">
+        <div>
+          <div class="project-number">Project 03 / 05</div>
+          <div class="project-title">Real-Time Ride Event Streaming</div>
+          <div class="project-tagline">Build a streaming pipeline for GPS/ride events (Grab/LINE MAN style). Implement on Kinesis (AWS) and Pub/Sub (GCP) and feel the architectural difference.</div>
+        </div>
+        <div class="project-meta">
+          <span class="difficulty-badge diff-intermediate">Intermediate</span>
+          <span class="duration">3–4 weeks</span>
+          <div class="toggle-btn">›</div>
+        </div>
+      </div>
+      <div class="project-body">
+        <div class="project-inner">
+
+          <div>
+            <div class="section-title-sm">Concepts Applied</div>
+            <div class="concept-tags">
+              <span class="concept-tag">Batch vs Streaming</span>
+              <span class="concept-tag">Event-Driven Architecture</span>
+              <span class="concept-tag">Late-Arriving Data</span>
+              <span class="concept-tag">Watermarking</span>
+              <span class="concept-tag">Exactly-Once Semantics</span>
+              <span class="concept-tag">Kappa Architecture</span>
+              <span class="concept-tag">Fault Tolerance</span>
+              <span class="concept-tag">DAG / Distributed Computing</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-title-sm">Build Tasks</div>
+            <div class="task-list">
+              <div class="task-item"><span class="task-num">01.</span><span class="task-text"><strong>Simulate ride events</strong> — Python producer emits pickup, dropoff, GPS ping, payment events continuously</span></div>
+              <div class="task-item"><span class="task-num">02.</span><span class="task-text"><strong>Consume + aggregate</strong> — rolling 5-min window metrics: active rides, avg wait time per Bangkok zone</span></div>
+              <div class="task-item"><span class="task-num">03.</span><span class="task-text"><strong>Handle late data</strong> — implement watermarks (allow events up to 10 min late), observe how results change</span></div>
+              <div class="task-item"><span class="task-num">04.</span><span class="task-text"><strong>Sink streaming results</strong> to a DWH table partitioned by hour</span></div>
+              <div class="task-item"><span class="task-num">05.</span><span class="task-text"><strong>Build real-time Grafana dashboard</strong> — live ride volume by Bangkok district, average fare trend</span></div>
+              <div class="task-item"><span class="task-num">06.</span><span class="task-text"><strong>Simulate consumer crash</strong> — restart and verify no events were lost or duplicated (offset/ack management)</span></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-title-sm">Streaming Services Side-by-Side</div>
+            <div class="dual-cloud">
+              <div class="cloud-panel aws-panel">
+                <div class="cloud-panel-header aws-header">
+                  <div class="cloud-dot aws-dot"></div>
+                  <span class="cloud-logo aws">AWS Streaming Stack</span>
+                </div>
+                <div class="cloud-service-list">
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">Kinesis Streams</span>
+                    <span class="cs-desc">Shard-based, ordered within shard, 7-day max retention</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">KDA (Flink SQL)</span>
+                    <span class="cs-desc">Managed Flink — windowed aggregations on Kinesis without cluster ops</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">Kinesis Firehose</span>
+                    <span class="cs-desc">Dead-simple delivery: stream → S3/Redshift, no code required</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">MSK (Kafka)</span>
+                    <span class="cs-desc">Managed Kafka — use if you want Kafka-native ecosystem on AWS</span>
+                  </div>
+                </div>
+              </div>
+              <div class="cloud-panel gcp-panel">
+                <div class="cloud-panel-header gcp-header">
+                  <div class="cloud-dot gcp-dot"></div>
+                  <span class="cloud-logo gcp">GCP Streaming Stack</span>
+                </div>
+                <div class="cloud-service-list">
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">Pub/Sub</span>
+                    <span class="cs-desc">Serverless, global, ~100ms latency, no shard capacity planning</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">Dataflow</span>
+                    <span class="cs-desc">Apache Beam — handles stream + batch in one API, auto-scales to zero</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">Pub/Sub → BQ</span>
+                    <span class="cs-desc">Zero-code direct sink: Pub/Sub writes to BigQuery table natively</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">BQ Streaming Insert</span>
+                    <span class="cs-desc">Insert rows directly into BigQuery with sub-second availability</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arch-grid">
+            <div class="arch-box aws"><span class="arch-title">AWS Architecture</span>Python Producer (boto3)
+  → Kinesis Data Streams
+  → KDA Flink SQL (5-min windows)
+  → Kinesis Firehose
+  → S3 → Redshift COPY
+  → Grafana (Redshift)</div>
+            <div class="arch-box gcp"><span class="arch-title">GCP Architecture</span>Python Producer (pubsub)
+  → Pub/Sub Topic
+  → Dataflow (Apache Beam)
+  → 5-min window aggregations
+  → BigQuery streaming insert
+  → Grafana (BigQuery)</div>
+          </div>
+
+          <div class="compare-box">
+            <div class="label">⚖ Key Comparison After Building</div>
+            <span class="aws-t">Kinesis</span> requires upfront shard capacity planning — more events means more shards, more cost, and ordering is only guaranteed per shard. <span class="gcp-t">Pub/Sub</span> is fully serverless, scales automatically, but does NOT guarantee ordering by default (need Ordering Keys explicitly). Which is simpler to operate for a 3-person team? Which handles a 10× traffic spike more gracefully? Also compare: Kinesis shard-hour pricing vs Pub/Sub message-volume pricing — which is cheaper for your event volume?
+          </div>
+
+          <div class="challenge-box">
+            <div class="label">★ Challenge Extension</div>
+            Implement <strong>surge pricing detection</strong>: if demand in a Bangkok zone exceeds 2× supply in any 3-minute window, emit a surge alert to a second stream/topic. A downstream consumer writes this to a "surge_zones" table. Build on both clouds and compare how each handles multi-topic fan-out. Document the cost difference: Kinesis charges by shard-hours, Pub/Sub by message volume — which is cheaper for a system sending ~10K surge events per day?
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT 4 -->
+    <div class="project">
+      <div class="project-header" onclick="toggle(this)">
+        <div>
+          <div class="project-number">Project 04 / 05</div>
+          <div class="project-title">Lakehouse Migration & Medallion Architecture</div>
+          <div class="project-tagline">Redesign Projects 1–3 into a Bronze/Silver/Gold lakehouse using Delta Lake. Run PySpark on EMR (AWS) vs Dataproc (GCP) and compare managed Spark.</div>
+        </div>
+        <div class="project-meta">
+          <span class="difficulty-badge diff-advanced">Advanced</span>
+          <span class="duration">4–5 weeks</span>
+          <div class="toggle-btn">›</div>
+        </div>
+      </div>
+      <div class="project-body">
+        <div class="project-inner">
+
+          <div>
+            <div class="section-title-sm">Concepts Applied</div>
+            <div class="concept-tags">
+              <span class="concept-tag">Data Lakehouse</span>
+              <span class="concept-tag">Medallion Architecture</span>
+              <span class="concept-tag">Schema Evolution</span>
+              <span class="concept-tag">Columnar Storage</span>
+              <span class="concept-tag">ACID Transactions</span>
+              <span class="concept-tag">Distributed Computing</span>
+              <span class="concept-tag">Horizontal Scaling</span>
+              <span class="concept-tag">Partitioning</span>
+              <span class="concept-tag">Fault Tolerance</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-title-sm">Build Tasks</div>
+            <div class="task-list">
+              <div class="task-item"><span class="task-num">01.</span><span class="task-text"><strong>Set up Delta Lake on object storage</strong> — replace flat Parquet with Delta format across Bronze/Silver/Gold on both clouds</span></div>
+              <div class="task-item"><span class="task-num">02.</span><span class="task-text"><strong>Enforce schema at Bronze</strong> — reject malformed records with clear error logging rather than silently corrupting Silver</span></div>
+              <div class="task-item"><span class="task-num">03.</span><span class="task-text"><strong>Simulate schema evolution</strong> — upstream adds a new column; demonstrate backward compatibility and migrate old data</span></div>
+              <div class="task-item"><span class="task-num">04.</span><span class="task-text"><strong>Use Delta time travel</strong> — query Gold as of 30 days ago; fix a bad transformation and restore previous state</span></div>
+              <div class="task-item"><span class="task-num">05.</span><span class="task-text"><strong>Implement MERGE/UPSERT</strong> — replace naive overwrites with Delta MERGE for idempotent incremental loads</span></div>
+              <div class="task-item"><span class="task-num">06.</span><span class="task-text"><strong>Run on managed cluster</strong> — submit the same PySpark jobs on EMR and Dataproc; benchmark startup time and cost</span></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-title-sm">Managed Spark: EMR vs Dataproc</div>
+            <div class="dual-cloud">
+              <div class="cloud-panel aws-panel">
+                <div class="cloud-panel-header aws-header">
+                  <div class="cloud-dot aws-dot"></div>
+                  <span class="cloud-logo aws">AWS Lakehouse Stack</span>
+                </div>
+                <div class="cloud-service-list">
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">S3 + Delta Lake</span>
+                    <span class="cs-desc">S3A connector — careful config needed for ACID guarantees over S3</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">EMR</span>
+                    <span class="cs-desc">EC2-based Spark — full control, slower startup (~5–10 min), spot support</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">EMR Serverless</span>
+                    <span class="cs-desc">Submit Spark jobs without cluster management — pay-per-vCPU-hour</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">Glue 4.0</span>
+                    <span class="cs-desc">Supports Delta Lake natively — simpler than EMR for most batch transforms</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">Lake Formation</span>
+                    <span class="cs-desc">Table/column-level governance over your Delta lakehouse</span>
+                  </div>
+                </div>
+              </div>
+              <div class="cloud-panel gcp-panel">
+                <div class="cloud-panel-header gcp-header">
+                  <div class="cloud-dot gcp-dot"></div>
+                  <span class="cloud-logo gcp">GCP Lakehouse Stack</span>
+                </div>
+                <div class="cloud-service-list">
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">GCS + Delta Lake</span>
+                    <span class="cs-desc">GCS connector — better-integrated with GCP auth model than S3A</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">Dataproc</span>
+                    <span class="cs-desc">Managed Spark — fast ~90s startup, GCS/BigQuery native connectors</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">Dataproc Serverless</span>
+                    <span class="cs-desc">Submit Spark batch without cluster — same concept, faster cold start</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">BigLake</span>
+                    <span class="cs-desc">Query Delta/Iceberg tables on GCS directly from BigQuery</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">Dataplex</span>
+                    <span class="cs-desc">Catalog, lineage, and quality across the whole lakehouse in one place</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arch-grid">
+            <div class="arch-box aws"><span class="arch-title">AWS Lakehouse</span>Sources
+  → S3 Bronze (Delta format)
+  → EMR / Glue 4.0 (PySpark)
+  → S3 Silver (MERGE, typed)
+  → dbt + EMR Serverless
+  → S3 Gold (ACID, time-travel)
+  → Lake Formation permissions
+  → Athena / Redshift Spectrum</div>
+            <div class="arch-box gcp"><span class="arch-title">GCP Lakehouse</span>Sources
+  → GCS Bronze (Delta format)
+  → Dataproc / Serverless (PySpark)
+  → GCS Silver (MERGE, typed)
+  → dbt + Dataproc
+  → GCS Gold (ACID, time-travel)
+  → BigLake + Dataplex
+  → BigQuery External → Looker</div>
+          </div>
+
+          <div class="compare-box">
+            <div class="label">⚖ Key Comparison After Building</div>
+            <span class="aws-t">EMR</span> gives you maximum control but significant operational overhead — cluster config, bootstrap actions, spot interruption handling, ~5–10 min startup. <span class="gcp-t">Dataproc</span> is leaner with ~90s startup, making ephemeral clusters practical for daily jobs. For serverless: EMR Serverless vs Dataproc Serverless — benchmark both on the same 10GB dataset. Which finishes first? Which costs less? Which was easier to debug when a job failed?
+          </div>
+
+          <div class="challenge-box">
+            <div class="label">★ Challenge Extension</div>
+            A Thai logistics partner sends 6 months of historical backlog in a format that doesn't match your current Silver schema. Write an automated <strong>schema reconciliation job in PySpark</strong> — detects mismatches, maps old columns to new, flags unmappable fields, loads data into Bronze correctly. Run it on both EMR and Dataproc. Benchmark: which finishes first on the same dataset? What drives the difference — connector overhead, cluster startup, or resource allocation?
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT 5 -->
+    <div class="project">
+      <div class="project-header" onclick="toggle(this)">
+        <div>
+          <div class="project-number">Project 05 / 05</div>
+          <div class="project-title">Production-Grade Banking Data Platform</div>
+          <div class="project-tagline">Capstone — design and deploy a full data platform for a Thai digital bank. All 7 concept stages, both clouds, full portfolio output including your AWS vs GCP recommendation.</div>
+        </div>
+        <div class="project-meta">
+          <span class="difficulty-badge diff-capstone">Capstone</span>
+          <span class="duration">6–8 weeks</span>
+          <div class="toggle-btn">›</div>
+        </div>
+      </div>
+      <div class="project-body">
+        <div class="project-inner">
+
+          <div>
+            <div class="section-title-sm">All 7 Concept Stages Applied</div>
+            <div class="concept-tags">
+              <span class="concept-tag">Lambda Architecture</span>
+              <span class="concept-tag">Data Mesh</span>
+              <span class="concept-tag">PDPA Compliance</span>
+              <span class="concept-tag">Streaming + Batch</span>
+              <span class="concept-tag">Data Contracts</span>
+              <span class="concept-tag">SCD Type 2</span>
+              <span class="concept-tag">Fault Tolerance</span>
+              <span class="concept-tag">MapReduce / DAG</span>
+              <span class="concept-tag">Data Quality</span>
+              <span class="concept-tag">Medallion</span>
+              <span class="concept-tag">Lineage</span>
+              <span class="concept-tag">Schema Evolution</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-title-sm">Build Tasks — 3 Domain Pipelines</div>
+            <div class="task-list">
+              <div class="task-item"><span class="task-num">01.</span><span class="task-text"><strong>Design 3 domain pipelines</strong> — Transactions, Customer KYC, and Fraud Risk — each as a separate data product with its own contract</span></div>
+              <div class="task-item"><span class="task-num">02.</span><span class="task-text"><strong>Transactions domain</strong> — real-time streaming → Delta Lake + nightly dbt batch reconciliation (Lambda pattern)</span></div>
+              <div class="task-item"><span class="task-num">03.</span><span class="task-text"><strong>KYC domain</strong> — SCD Type 2 on customer profile, PDPA-compliant PII masking at Bronze, full audit log for every change</span></div>
+              <div class="task-item"><span class="task-num">04.</span><span class="task-text"><strong>Fraud domain</strong> — consume transaction events, compute rolling 7-day aggregations by merchant category, output feature store for ML team</span></div>
+              <div class="task-item"><span class="task-num">05.</span><span class="task-text"><strong>Cross-domain contract test</strong> — verify customer_id exists in KYC before a transaction is promoted to Gold</span></div>
+              <div class="task-item"><span class="task-num">06.</span><span class="task-text"><strong>Full orchestration</strong> — Airflow DAGs with cross-domain dependencies, failure alerting to Slack</span></div>
+              <div class="task-item"><span class="task-num">07.</span><span class="task-text"><strong>Infrastructure as Code</strong> — provision everything with Terraform (same tool, two provider blocks: aws and google)</span></div>
+              <div class="task-item"><span class="task-num">08.</span><span class="task-text"><strong>Architecture Decision Records</strong> — document 5+ design choices with tradeoffs, culminating in your AWS vs GCP recommendation</span></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-title-sm">Full Platform Stack — Both Clouds</div>
+            <div class="dual-cloud">
+              <div class="cloud-panel aws-panel">
+                <div class="cloud-panel-header aws-header">
+                  <div class="cloud-dot aws-dot"></div>
+                  <span class="cloud-logo aws">AWS Banking Platform</span>
+                </div>
+                <div class="cloud-service-list">
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">MSK (Kafka)</span>
+                    <span class="cs-desc">Transaction event streaming — Kafka-native ecosystem on AWS</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">DMS</span>
+                    <span class="cs-desc">CDC from Postgres KYC DB → Kinesis → Bronze</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">S3 + Delta Lake</span>
+                    <span class="cs-desc">Medallion lakehouse — all 3 domains, separate S3 prefixes</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">Glue + EMR</span>
+                    <span class="cs-desc">Glue for lightweight transforms; EMR for heavy fraud aggregations</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">Redshift</span>
+                    <span class="cs-desc">Gold serving layer — Spectrum queries S3 Delta directly</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">Lake Formation</span>
+                    <span class="cs-desc">Column-level PII masking for KYC domain under PDPA</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name aws">MWAA</span>
+                    <span class="cs-desc">Managed Airflow — cross-domain DAGs with SLA callbacks</span>
+                  </div>
+                </div>
+              </div>
+              <div class="cloud-panel gcp-panel">
+                <div class="cloud-panel-header gcp-header">
+                  <div class="cloud-dot gcp-dot"></div>
+                  <span class="cloud-logo gcp">GCP Banking Platform</span>
+                </div>
+                <div class="cloud-service-list">
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">Pub/Sub</span>
+                    <span class="cs-desc">Transaction event streaming — serverless, no capacity planning</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">Datastream</span>
+                    <span class="cs-desc">CDC-native: Postgres → GCS → BigQuery — schema-aware, serverless</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">GCS + Delta Lake</span>
+                    <span class="cs-desc">Same medallion architecture — BigLake queries it from BigQuery</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">Dataflow + Dataproc</span>
+                    <span class="cs-desc">Dataflow for streaming; Dataproc for heavy Spark fraud aggregations</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">BigQuery</span>
+                    <span class="cs-desc">Gold serving — fully serverless, no cluster, pay per query</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">Dataplex</span>
+                    <span class="cs-desc">Column masking, lineage, cross-domain DQ rules unified</span>
+                  </div>
+                  <div class="cloud-service-item">
+                    <span class="cs-name gcp">Cloud Composer</span>
+                    <span class="cs-desc">Managed Airflow — same DAG code as MWAA, different infra backend</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arch-grid">
+            <div class="arch-box aws"><span class="arch-title">AWS — 3 Domain Flows</span>Txn: MSK → EMR Spark Stream
+  → S3 Bronze → Silver
+  → Redshift Gold (nightly Lambda)
+
+KYC: DMS CDC → Kinesis
+  → Glue SCD2 → S3 Silver
+  → Lake Formation PII mask
+
+Fraud: Txn → EMR Spark
+  → 7-day feature aggregations
+  → S3 Feature Store
+
+All via MWAA (Airflow DAGs)</div>
+            <div class="arch-box gcp"><span class="arch-title">GCP — 3 Domain Flows</span>Txn: Pub/Sub → Dataflow Stream
+  → GCS Bronze → Silver
+  → BigQuery Gold (nightly Lambda)
+
+KYC: Datastream CDC → GCS
+  → Dataproc SCD2 → Silver
+  → Dataplex column mask
+
+Fraud: Txn → Dataproc Spark
+  → 7-day feature aggregations
+  → GCS / BQ Feature Store
+
+All via Cloud Composer (Airflow)</div>
+          </div>
+
+          <div class="compare-box">
+            <div class="label">⚖ Final ADR — AWS vs GCP Recommendation</div>
+            After building everything on both, write a 1-page Architecture Decision Record answering: for a Thai fintech startup needing to move fast with a 3-person data team, which cloud do you recommend?
+            <br><br>
+            Consider: <span class="aws-t">AWS</span> — largest ecosystem, strongest Thai e-commerce/logistics presence, bigger local hiring pool, more service options but more choices to manage. <span class="gcp-t">GCP</span> — BigQuery's serverless model eliminates a whole class of operational problems, Datastream is the best CDC tool, better for analytics-heavy teams. There's no universally right answer. The quality of your reasoning is the deliverable.
+          </div>
+
+          <div>
+            <div class="section-title-sm">Portfolio Deliverables</div>
+            <div class="task-list">
+              <div class="task-item"><span class="task-num">→</span><span class="task-text">GitHub repo with full code, README, and architecture diagrams for both clouds</span></div>
+              <div class="task-item"><span class="task-num">→</span><span class="task-text">5+ Architecture Decision Records including your final AWS vs GCP recommendation</span></div>
+              <div class="task-item"><span class="task-num">→</span><span class="task-text">dbt docs site with full lineage graph — same dbt models, two adapter profiles</span></div>
+              <div class="task-item"><span class="task-num">→</span><span class="task-text">Terraform modules for both cloud environments (aws provider + google provider)</span></div>
+              <div class="task-item"><span class="task-num">→</span><span class="task-text">Write-up: "3 tradeoffs I made and how AWS and GCP forced different design decisions"</span></div>
+            </div>
+          </div>
+
+          <div class="challenge-box">
+            <div class="label">★ The Real Challenge</div>
+            On week 5, your "upstream" sends a file 6 hours late AND with a schema change at the same time. Your system must: detect both issues, alert correctly, not propagate bad data to Gold, allow self-healing when correct data arrives, and produce an incident report — on both clouds. How each cloud's monitoring, alerting, and contract system surfaces this incident will be very different. Document the incident response difference between AWS and GCP in your final write-up.
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CAREER NOTE -->
+  <div class="career-note">
+    <div class="section-label">For the Thai Job Market — Which Cloud Matters Where</div>
+    <div class="career-grid">
+      <div class="career-cell">
+        <div class="career-cell-title">Fintech & Banking</div>
+        <div class="career-cell-body">SCB, KBank, TTB, Ascend Money — heavily GCP and Azure. BigQuery + Datastream is popular. PDPA compliance, audit trails, and real-time fraud are the top requirements. GCP depth is a strong differentiator here.</div>
+      </div>
+      <div class="career-cell">
+        <div class="career-cell-title">E-Commerce & Logistics</div>
+        <div class="career-cell-body">Lazada, Flash Express, Kerry, LINE MAN — AWS-heavy due to tech ancestry. S3 + EMR + Redshift stack common. Airflow + dbt is dominant. AWS certification carries real weight in these companies.</div>
+      </div>
+      <div class="career-cell">
+        <div class="career-cell-title">Consulting & MNC</div>
+        <div class="career-cell-body">Accenture, EY, Deloitte Thailand — clients use both. Being fluent in both clouds and able to recommend one over the other with clear reasoning is the most valuable skill. Your ADRs from Project 5 are your interview material.</div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <span>Data Engineering — Dual-Cloud Hands-On Project Path</span>
+    <span>5 Projects · AWS + GCP · Concept-to-Production</span>
+  </footer>
+
+</div>
+
+<script>
+  function toggle(headerEl) {
+    const project = headerEl.closest('.project');
+    project.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
